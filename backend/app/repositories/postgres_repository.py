@@ -42,12 +42,19 @@ class Database:
                 "NEON_INGEST_URL and NEON_QUERY_URL must be set. Run scripts/setup_db.py first."
             )
         kwargs: dict[str, Any] = {"prepare_threshold": None}
-        self.service = AsyncConnectionPool(
-            service_url, open=False, min_size=1, max_size=max_size, kwargs=kwargs
-        )
-        self.query = AsyncConnectionPool(
-            query_url, open=False, min_size=1, max_size=max_size, kwargs=kwargs
-        )
+        # Neon closes idle connections when its compute suspends, so every connection is
+        # checked before use and idle ones are recycled well before Neon drops them.
+        pool_options: dict[str, Any] = {
+            "open": False,
+            "min_size": 1,
+            "max_size": max_size,
+            "kwargs": kwargs,
+            "check": AsyncConnectionPool.check_connection,
+            "max_idle": 120,
+            "reconnect_timeout": 30,
+        }
+        self.service = AsyncConnectionPool(service_url, **pool_options)
+        self.query = AsyncConnectionPool(query_url, **pool_options)
 
     async def open(self) -> None:
         await self.service.open(wait=True, timeout=30)

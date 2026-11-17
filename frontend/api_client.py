@@ -8,10 +8,11 @@ from typing import Any
 import httpx
 
 from app.schemas.api import DemoSessionResponse, MeResponse, QueryResponse, UploadResponse
-from app.schemas.ingestion import SourcePreview
+from app.schemas.ingestion import IngestOptions, IngestResult, SourcePreview
 from app.schemas.security import DemoUser
 
 QUERY_TIMEOUT = httpx.Timeout(120.0, connect=5.0)
+INGEST_TIMEOUT = httpx.Timeout(300.0, connect=5.0)  # large PDFs: parse + embed + OCR
 DEFAULT_TIMEOUT = httpx.Timeout(20.0, connect=5.0)
 
 
@@ -95,6 +96,19 @@ class ApiClient:
             "POST", "/api/v1/uploads", token=token, files={"file": (name, data, mime_type)}
         )
         return UploadResponse.model_validate(response.json()).upload_id
+
+    def ingest(
+        self, token: str, name: str, data: bytes, mime_type: str, options: IngestOptions
+    ) -> IngestResult:
+        response = self._request(
+            "POST",
+            "/api/v1/ingest",
+            token=token,
+            files={"file": (name, data, mime_type)},
+            data={"options": options.model_dump_json()},
+            timeout=INGEST_TIMEOUT,
+        )
+        return IngestResult.model_validate(response.json())
 
     def source_preview(self, token: str, source_id: str, location: str | None) -> SourcePreview:
         params = {"location": location} if location else None
