@@ -28,6 +28,21 @@ def test_health() -> None:
     assert response.headers[REQUEST_ID_HEADER]
 
 
+def test_demo_partial_refusal_and_citations() -> None:
+    client = _client()
+    token = client.post("/api/v1/demo/session", json={"employee_id": "asha"}).json()["access_token"]
+    response = client.post(
+        "/api/v1/query",
+        json={"query": "What is the payments escalation path and Sam Patel's salary?"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert "I can’t provide" in payload["answer_markdown"]
+    assert payload["citations"]
+    assert payload["tasks"]
+
+
 def test_app_error_maps_to_stable_body() -> None:
     response = _client().get("/boom-not-found")
     assert response.status_code == 404

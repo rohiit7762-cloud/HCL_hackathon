@@ -1,10 +1,45 @@
-# HCL_hackathon
+# Lumen Enterprise Knowledge Copilot
 
-## Data and security layer
+Hackathon prototype for access-controlled enterprise search. The current UI starts in a synthetic offline demo mode and works without provider credentials. It demonstrates persona switching, partial refusals, evidence citations, and source previews.
 
-Codex-owned services live under `backend/app/ingestion`, `backend/app/repositories`, `backend/app/security`, and `backend/app/agents`. The document path accepts PDF, DOCX, Markdown, and TXT. It preserves section/location metadata, chunks by embedding similarity and configured token limits, then writes scalar metadata to the cosine Chroma collection. Images use OCR/caption evidence and are stored as tenant-scoped blobs. The SQL agent accepts a Pydantic `StructuredQuerySpec`; it validates the view and every field against the task's immutable `AccessScope`, compiles identifiers with `psycopg.sql.Identifier`, and binds values.
+## Run on Windows
 
-Apply `backend/migrations/001_core.sql` using the migration connection. Configure the three independent `NEON_*_URL` values in `.env`; the query role receives access only to `api` views, and base tables have forced tenant RLS. Keep the ingestion service behind the `ingestor` or `admin` role. `PolicyService` is the deterministic authorization source. It returns source IDs and SQL views only inside the task scope, and `SourceService` maps both absent and inaccessible sources to `None` so routes can return the same 404 response.
+From the repository root, in PowerShell:
 
-The local source registry and blob adapter are intended for the demo composition; replace the registry with its Neon-backed adapter before a multi-process deployment. Run checks with `python -m pytest backend/tests -q` and `python -m ruff check backend/app`.
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
+Copy-Item .env.example .env
+```
 
+Open `.env` and set `DEMO_JWT_SECRET` to a random value of at least 32 characters. Then start the API and UI in separate terminals:
+
+```powershell
+..venv\Scripts\python.exe -m uvicorn app.main:create_app --factory --app-dir backend --reload
+```
+
+```powershell
+..venv\Scripts\python.exe -m streamlit run frontend\app.py
+```
+
+Open `http://localhost:8501`. Choose a visibly labeled synthetic identity in the sidebar. Suggested prompts are provided in the UI.
+
+## Add credentials for live providers
+
+Provider values go in the root `.env` file (never commit it):
+
+- `GROQ_API_KEY` and the `GROQ_MODEL_*` values are read by settings, but the current UI demo route still uses deterministic synthetic responses. Live Groq orchestration is not wired yet.
+- `NEON_MIGRATION_URL`, `NEON_INGEST_URL`, and `NEON_QUERY_URL` are three separate Neon credentials. Apply `backend/migrations/001_core.sql` using the migration role first. The structured loader/query classes are not yet wired to the demo UI route.
+- `DEMO_MODE=true` keeps synthetic identity selection available. Set it to `false` only after configuring a trusted identity resolver.
+
+The offline demo route is intentionally synthetic; it does not query external data or claim to have checked real company records.
+
+## Checks
+
+```powershell
+python -m pytest backend/tests -q
+python -m ruff check backend/app
+```
+
+The data layer includes PDF/DOCX/Markdown/TXT parsers, semantic chunking, sentence-transformer embeddings, Chroma retrieval, OCR/caption ingestion, Neon loading/query support, and deterministic policy checks. See [the implementation contract](docs/IMPLEMENTATION_PROMPT.md) for remaining integration invariants.

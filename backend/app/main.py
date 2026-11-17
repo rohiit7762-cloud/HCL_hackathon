@@ -10,7 +10,7 @@ from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.api.routes import health
+from app.api.routes import demo, health, sources
 from app.core.config import Settings, get_settings
 from app.core.errors import AppError
 from app.core.logging import configure_logging, get_logger, request_id_var
@@ -51,6 +51,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     ) -> Response:
         request_id = uuid.uuid4().hex
         token = request_id_var.set(request_id)
+        request.state.request_id = request_id
         try:
             length = request.headers.get("content-length")
             if length and length.isdigit() and int(length) > settings.max_request_bytes:
@@ -77,4 +78,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return _error(500, "internal_error", AppError.default_message)
 
     app.include_router(health.router)
+    app.include_router(demo.router)
+    app.include_router(sources.router)
     return app
