@@ -1,0 +1,391 @@
+================================================================================
+CORVANTA TECHNOLOGIES, INC.
+OFFICE OF THE CISO — ENTERPRISE SECURITY POLICY
+================================================================================
+Document ID:      SEC-04
+Title:            Enterprise Data Governance & Compliance Policy
+Version:          5.1
+Effective Date:   March 1, 2026
+Last Revised:     August 20, 2026
+Next Review:      March 1, 2027
+Policy Owner:     Office of the Chief Information Security Officer (CISO)
+Co-Owner:         Office of the General Counsel — Privacy & Data Protection
+Approved By:      Nathaniel Okafor, Chief Information Security Officer
+                  Rebecca Stanhope, General Counsel
+                  Ratified by the Audit & Risk Committee of the Board, April 9, 2026
+Policy Contacts:  Technical: Siobhán Gallagher, Lead, Security Operations & IR
+                  Legal: Jonathan Albrecht, Senior Corporate Counsel; Deputy DPO
+                  Data Protection Officer: dpo@corvanta.com
+Classification:   C1 – Internal
+Compliance:       MANDATORY. Violations are subject to disciplinary action up to and
+                  including termination of employment, termination of contract for
+                  third parties, and referral for civil or criminal action.
+================================================================================
+
+1. PURPOSE
+
+This Policy establishes the mandatory requirements for classifying, handling, storing, transmitting, accessing, retaining, and disposing of Corvanta information assets. It specifically governs Personally Identifiable Information (PII), passwords and other credentials, and Restricted (C3) data. Each enforceable requirement carries a unique Rule ID (e.g., PII-03, CRED-03, ACC-03). Rule IDs are cited in all violation findings, audit reports, and disciplinary records.
+
+2. SCOPE
+
+2.1 Personnel: All workforce members, meaning employees, interns, contractors, consultants, temporary staff, and third parties with access to Corvanta systems or data.
+2.2 Data: All Corvanta data and data entrusted to Corvanta by customers, employees, and partners, in any form (electronic, paper, verbal, or visual).
+2.3 Systems: All systems that store, process, or transmit Corvanta data, including on-premises infrastructure, public cloud, SaaS applications, endpoints, mobile devices, collaboration tools, and AI tools.
+
+3. REGULATORY AND FRAMEWORK ALIGNMENT
+
+EU General Data Protection Regulation (GDPR); UK GDPR; California Consumer Privacy Act as amended by CPRA; India Digital Personal Data Protection Act 2023 (DPDP Act); US state data breach notification laws; PCI DSS v4.0; Sarbanes-Oxley Act (SOX) Section 404; ISO/IEC 27001:2022; NIST Cybersecurity Framework 2.0; NIST SP 800-63B (Digital Identity Guidelines).
+
+4. DEFINITIONS
+
+- Personal Data / PII: Any information relating to an identified or identifiable natural person, including name, email address, phone number, employee ID, IP address, and device identifiers.
+- Sensitive PII (SPII): PII whose exposure could result in substantial harm, including: US Social Security Number (SSN) and ITIN; national identifiers (India Aadhaar and PAN, Irish PPSN); passport and driver's license numbers; financial account and IBAN numbers; payment card numbers; biometric data; health and medical data; background check results; precise geolocation; racial or ethnic origin; religious beliefs; trade union membership; sexual orientation; and any username combined with its password.
+- Credential / Secret: Any password, passphrase, PIN, API key, access token, OAuth client secret, private key, certificate private key, database connection string containing authentication data, SNMP community string, or MFA seed/recovery code.
+- Restricted Data (C3): Data classified at the highest sensitivity tier per Section 5.
+- Data Owner: VP-level (or higher) leader accountable for a data domain, its classification, and access approvals.
+- Data Steward: Individual designated by the Data Owner to manage data quality, metadata, and day-to-day governance.
+- Data Custodian: IT, Cloud, or Security personnel who implement and operate technical controls over the data.
+- Approved Repository: A storage location listed in Section 9.2 as approved for the relevant classification.
+- Non-Production Environment: Any development, test, QA, UAT, staging, sandbox, training, demo, proof-of-concept, or hackathon environment.
+- RDAR: Restricted Data Access Request — the ServiceNow form required for C3 access.
+- DER: Data Export Request — the ServiceNow form required for bulk data exports.
+
+5. DATA CLASSIFICATION STANDARD
+
+5.1 Classification Tiers:
+
+Level | Label        | Definition                                   | Examples                                     | Minimum Handling Requirements
+------|--------------|----------------------------------------------|----------------------------------------------|--------------------------------------------------
+C0    | Public       | Approved for public release                  | Press releases, marketing content, published | No restrictions; publication requires Corporate
+      |              |                                              | product documentation                        | Communications approval
+C1    | Internal     | Default for business information; low harm   | Internal policies, org charts, SME Directory,| Internal use only; external sharing requires an
+      |              | if disclosed                                 | training materials, meeting notes            | NDA
+C2    | Confidential | Disclosure could cause material harm to      | Customer contracts, source code, unreleased  | Encryption in transit and at rest; need-to-know
+      |              | Corvanta, customers, or partners             | financials, network diagrams and runbooks    | sharing; mandatory "Confidential" sensitivity
+      |              |                                              | (e.g., IT-RB-NET-001), non-sensitive PII     | label; external sharing requires NDA + Data
+      |              |                                              | (business contact data, employee ID)         | Owner approval
+C3    | Restricted   | Disclosure could cause severe harm,          | SPII, PHI, cardholder data, credentials and  | All C2 controls PLUS: RDAR-approved access
+      |              | regulatory penalties, or legal liability     | encryption keys, M&A material, unreleased    | (ACC-03); phishing-resistant MFA; managed
+      |              |                                              | earnings, vulnerability details, forensic    | devices only; DLP blocking; access logging;
+      |              |                                              | evidence, privileged legal communications,   | quarterly access reviews; external sharing only
+      |              |                                              | employee HR and compensation records         | with CISO + Data Owner approval
+
+5.2 Labeling: Microsoft Purview sensitivity labels are mandatory for all C2 and C3 documents, emails, and files. Auto-labeling is enforced for content matching SPII patterns (Annex A). Unlabeled content defaults to C1. However, unlabeled content that in fact contains C2 or C3 data constitutes a violation (Section 12).
+
+5.3 Aggregation Rule: Any dataset combining two or more PII elements for 500 or more individuals is classified at least C2. Any dataset containing SPII is classified C3. When elements of different classifications are combined, the highest classification governs.
+
+6. PII HANDLING REQUIREMENTS
+
+PII-01 Data Minimization & Purpose Limitation. Collect, process, and retain only the PII strictly necessary for a documented business purpose recorded in the Record of Processing Activities (RoPA). Secondary use for a new purpose requires Legal review.
+
+PII-02 SPII Classification. All SPII is classified C3 – Restricted without exception.
+
+PII-03 Prohibited Transmission Channels. SPII must NOT be transmitted or stored in plaintext via: email body or unencrypted email attachments; Slack or Microsoft Teams messages; SMS, WhatsApp, or any personal messaging application; ServiceNow or Jira ticket fields, comments, or attachments; Confluence or wiki pages; calendar invitations; or voicemail. Approved methods: Corvanta SecureShare (encrypted, MFA-protected, link expiry of 7 days or less, download logging) for C3. Purview "Encrypt-Only" email is permitted for C2 PII only.
+
+PII-04 Masking & Truncation. SSNs, national identifiers, and financial account numbers may be displayed only as the last four digits (e.g., ***-**-6789). Payment card numbers may display at most the first six and last four digits (PCI DSS). Full values must never appear in logs, screenshots, reports, dashboards, test fixtures, error messages, or AI prompts.
+
+PII-05 Non-Production Use. Production PII is prohibited in all Non-Production Environments unless irreversibly anonymized or replaced with synthetic data generated by the approved Test Data Management (TDM) platform. Exceptions require approval from both the DPO and the Data Owner, are limited to 30 days, and must be documented in ServiceNow GRC.
+
+PII-06 AI and External Processing Tools. C2 and C3 data must NOT be entered, pasted, uploaded, or otherwise submitted to any generative AI tool, large language model, AI browser extension, online translation service, or online file conversion/formatting service unless it is listed in the Approved AI Tools Register (AI-REG-01) for that classification. "Corvanta Assist" (tenant-isolated; no training on inputs) is approved for data up to C2. C3 data is prohibited in ALL AI tools unless a specific DPIA has been approved by Legal and the CISO.
+
+PII-07 Cross-Border Transfers. Transfers of personal data out of the EEA, UK, or India require a valid legal transfer mechanism (e.g., Standard Contractual Clauses, EU-US Data Privacy Framework certification) and Legal review before any new transfer flow is implemented.
+
+PII-08 Data Subject Requests. Any request from an individual to access, correct, delete, or port their personal data must be forwarded to privacy@corvanta.com within 2 business days of receipt. Workforce members must not respond to such requests independently. Requests are fulfilled within statutory deadlines (GDPR: one month; CCPA/CPRA: 45 days; DPDP Act: as prescribed).
+
+PII-09 Bulk Export. Exporting 500 or more PII records, or ANY quantity of SPII, from a system of record requires an approved Data Export Request (DER) with Data Owner approval. Exported data may be stored only in an Approved Repository and must be deleted within 30 days or upon completion of the purpose, whichever is sooner.
+
+PII-10 Physical Handling. Printing SPII is prohibited except by HR, Legal, and Payroll personnel with a documented business need, using secure print release. Printed SPII must be destroyed by cross-cut shredding (DIN 66399 P-4 or higher). Clean desk requirements apply at all times.
+
+PII-11 Employee Data Access. Employee HR records are accessible only to Workday HR Partner security groups. People managers may view their direct reports' job and performance data, but not SPII or compensation history beyond current pay.
+
+PII-12 Collection from Candidates and New Hires. SPII and identity documents may be collected ONLY through the Workday Pre-Hire Portal or the approved background screening vendor portal. Collection via email, chat, or text message is prohibited (see HR-POL-101 Section 4.4).
+
+7. PASSWORD, CREDENTIAL & SECRETS MANAGEMENT
+
+CRED-01 Password Construction. Standard user accounts: minimum 14 characters. Privileged accounts: minimum 20 characters. Service accounts: machine-generated, minimum 32 characters. Passphrases are encouraged. Passwords must NOT contain the username, "Corvanta," or predictable season/year patterns (e.g., "Winter2026!", "Summer2025"). All passwords are screened against breached-password lists at creation.
+
+CRED-02 Rotation. Standard user passwords are not subject to periodic expiry (per NIST SP 800-63B) but must be changed immediately upon suspected compromise. Privileged credentials are rotated automatically by CyberArk after each checkout. Service account credentials are rotated at least every 90 days. API keys and tokens have a maximum lifetime of 365 days (90 days for C3 systems).
+
+CRED-03 Plaintext Prohibition. Credentials and secrets must NEVER be written, stored, or transmitted in plaintext in any medium, including: email; Slack, Teams, or Zoom chat; ServiceNow or Jira tickets; documents, spreadsheets, wikis, or runbooks; source code, code comments, or configuration files; container images; CI/CD logs; screenshots; sticky notes; or whiteboards. Documents may reference the vault location of a credential (e.g., "CyberArk Safe NET-BREAKGLASS-PROD") but never the credential itself.
+
+CRED-04 No Sharing. Credentials are individually assigned. Sharing a password, MFA device, passkey, or authenticated session with ANY person, including managers, IT staff, and colleagues, is prohibited. Corvanta IT will never ask for your password.
+
+CRED-05 Approved Credential Storage. Personal work credentials: 1Password Business (corporate vault) only. Privileged credentials: CyberArk PAM. Application secrets: HashiCorp Vault, AWS Secrets Manager, or Azure Key Vault. Browser password storage is disabled on managed devices. Personal password managers must not be used for Corvanta credentials.
+
+CRED-06 Multi-Factor Authentication. MFA is mandatory for all workforce access. Phishing-resistant MFA (FIDO2 security keys such as YubiKey, or platform passkeys) is mandatory for privileged access, C3 data access, and remote administration. SMS one-time passcodes are prohibited except as a recovery method approved by the SOC.
+
+CRED-07 Source Code Secrets. Secret scanning (GitHub Advanced Security push protection plus gitleaks pre-commit hooks) is mandatory on all repositories. Bypassing push protection requires a documented justification reviewed by Application Security within 1 business day. Any secret committed to a repository is considered EXPOSED, even if removed in a later commit, and must be rotated in accordance with CRED-11.
+
+CRED-08 Default Credentials. Vendor default passwords must be changed, and default accounts disabled, before any device or application is connected to a Corvanta network.
+
+CRED-09 Shared & Generic Accounts. Prohibited, except approved service accounts and break-glass accounts. Break-glass credentials are sealed in CyberArk under dual control. Every break-glass use is reviewed by the SOC within 1 business day.
+
+CRED-10 Account Lockout. Standard accounts lock for 30 minutes after 10 consecutive failed authentication attempts. Privileged accounts lock after 5 attempts and require Service Desk identity verification to unlock.
+
+CRED-11 Exposure Response. Any suspected credential exposure must be reported to the SOC within 1 hour of discovery. Exposed credentials must be rotated or revoked within 1 hour (privileged or C3-system credentials) or within 4 hours (all others), and all active sessions invalidated.
+
+CRED-12 Session Controls. Endpoints auto-lock after 10 minutes of inactivity. ZTNA sessions require re-authentication every 12 hours. Privileged sessions are limited to a maximum of 8 hours.
+
+8. RESTRICTED DATA ACCESS CONTROL
+
+ACC-01 Least Privilege & Need-to-Know. Access is granted only to the minimum data and functions required for the workforce member's role, using Role-Based Access Profiles (RBAP) managed in SailPoint IdentityNow.
+
+ACC-02 Access Provisioning. All access is requested and approved through ServiceNow / SailPoint with manager approval. Administrators must not grant access directly outside the approved workflow.
+
+ACC-03 C3 Access Prerequisites. Access to C3 data requires ALL of the following:
+    (a) An approved RDAR with documented business justification, approved by BOTH the requester's manager AND the Data Owner;
+    (b) Completion of SEC-102 and PRV-201 within the prior 12 months. New hires may not submit an RDAR until SEC-102 is complete (HR-POL-101 Section 7.2);
+    (c) Enrollment in phishing-resistant MFA (CRED-06);
+    (d) Access only from Corvanta-managed, compliant devices (MDM-enrolled, EDR active, full-disk encryption enabled);
+    (e) A time-bound grant of no more than 90 days, renewable only through re-approval;
+    (f) For privileged (administrative) access to C3 systems, completion of SEC-220.
+
+ACC-04 Privileged Access. Privileged access is brokered exclusively through CyberArk with full session recording. Just-in-time elevation is limited to 8 hours. Standing administrative rights on production C3 systems are prohibited.
+
+ACC-05 User Access Reviews (UAR). C3 systems: quarterly. C2 systems: semi-annually. C1 systems: annually. Reviewers must certify within 14 calendar days of campaign launch. Uncertified access is automatically revoked on day 21.
+
+ACC-06 Joiner / Mover / Leaver.
+    - Joiner: RBAP access on Day 1; no C3 access before SEC-102 completion.
+    - Mover: access from the prior role is removed within 5 business days of the role change.
+    - Leaver (voluntary): all access disabled by the end of the last working day.
+    - Leaver (involuntary): all access disabled within 1 hour of HR notification. Privileged and C3 access is disabled before or concurrent with notification to the employee.
+
+ACC-07 Segregation of Duties. No individual may request and approve their own access. Developers may not deploy their own code to production without independent peer approval. The Finance SoD matrix (FIN-SOD-01) governs financial systems.
+
+ACC-08 Third-Party Access. Requires an executed NDA, a DPA (where personal data is involved), and a Third-Party Security Assessment (TPSA) rated "Acceptable" or better. Each third party has an accountable internal sponsor. Access expires at contract end or after 180 days, whichever occurs first. Access is provided via ZTNA only; site-to-site connectivity requires CISO approval.
+
+ACC-09 Logging & Monitoring. All access to C3 data is logged (identity, action, object, timestamp, source). Logs are retained for a minimum of 13 months (90 days immediately searchable) in Splunk ES. Anomalous access (e.g., record retrieval exceeding 3x the user's baseline, access from a new geography, or access outside normal working hours) generates a SOC alert.
+
+ACC-10 Prohibition on Circumvention. Workforce members must not use another person's access; exploit misconfigurations; disable, evade, or tamper with DLP, EDR, web proxy, or logging controls; or use personal devices or personal accounts to access or store C2 or C3 data.
+
+9. STORAGE, TRANSMISSION & ENCRYPTION
+
+9.1 Encryption Standards: Data at rest is encrypted with AES-256. Data in transit uses TLS 1.2 at minimum (TLS 1.3 preferred) and SSH v2. Encryption keys are managed in AWS KMS, Azure Key Vault (HSM-backed), or on-premises HSMs and rotated at least annually.
+
+9.2 Approved Repositories:
+
+Classification Ceiling | Approved Repositories
+-----------------------|--------------------------------------------------------------------------------------
+Up to C3               | Workday (HR data); SharePoint Online sites designated "Restricted" with Purview label
+                       | and DLP enforcement; AWS/Azure accounts tagged data-classification=c3 with CARB
+                       | approval; CyberArk; Corvanta SecureShare
+Up to C2               | Microsoft 365 (OneDrive, SharePoint, Teams files); Confluence; Jira; ServiceNow (no
+                       | SPII in free-text fields); GitHub Enterprise (no secrets or PII); Corvanta Assist
+PROHIBITED (C1–C3)     | Personal email (Gmail, Outlook.com, Yahoo); personal cloud storage (personal Google
+                       | Drive, Dropbox, iCloud); consumer messaging (WhatsApp, Telegram, personal Signal);
+                       | AI tools not listed in AI-REG-01; unencrypted USB removable media
+
+9.3 External Sharing: "Anyone with the link" sharing is disabled for C2 and C3 content. C2 content may be shared externally only with named recipients covered by an NDA. C3 content may be shared externally only via SecureShare with Data Owner approval. USB mass storage is blocked by default; exceptions require Endpoint Security approval and FIPS 140-3 validated hardware-encrypted drives.
+
+10. DATA RETENTION & DISPOSAL
+
+Record Type                                  | Retention Period
+---------------------------------------------|------------------------------------------------------------------
+Employee personnel records                   | 7 years after separation
+Payroll and tax records                      | 7 years
+US Form I-9                                  | Later of 3 years after hire date or 1 year after separation
+Background check reports                     | 5 years from report date
+Unsuccessful candidate data                  | 12 months after hiring decision (EEA: 6 months unless consent)
+Customer PII                                 | Contract term + 90 days, then deletion or anonymization
+Financial / SOX records                      | 7 years
+Access logs for C3 systems                   | 13 months minimum (90 days searchable)
+Network device logs                          | 12 months
+Security incident and forensic records       | 7 years after incident closure
+Email (general business)                     | 3 years, then auto-deleted
+Chat messages (Slack, Teams)                 | 18 months, then auto-deleted
+Meeting and call recordings                  | 90 days, unless designated a business record
+
+10.1 Legal Hold: Legal holds issued by the Office of the General Counsel supersede all retention schedules. Deleting data subject to a legal hold is a V1 Critical violation.
+10.2 Disposal: Media sanitization follows NIST SP 800-88. Certificates of destruction are retained for 3 years. Cloud data is disposed of by cryptographic erasure.
+
+11. MONITORING & DATA LOSS PREVENTION
+
+11.1 Corvanta monitors the use of corporate systems for security and compliance purposes, subject to applicable law and, in Ireland, consultation obligations with employee representatives.
+11.2 DLP controls: Microsoft Purview DLP (email, Microsoft 365, endpoints); Zscaler ZIA inline CASB (web uploads, unsanctioned SaaS, AI tools); GitHub secret scanning; Slack and Teams DLP; and Splunk ES correlation rules.
+11.3 Detection patterns are defined in Annex A. Pattern matches are INDICATORS. Each match is reviewed in context by the SOC or by an approved automated compliance review agent before a violation is confirmed.
+11.4 Synthetic test values generated by the approved TDM platform and stored in designated test repositories are not violations. The burden of demonstrating that data is synthetic rests with the Data Owner.
+
+12. VIOLATION CLASSIFICATION, SEVERITY & RESPONSE
+
+12.1 Severity Matrix:
+
+V1 — CRITICAL
+  Examples:
+    - Plaintext credential or secret exposed in any channel accessible to more than one person or to any external party (CRED-03)
+    - Sharing a password, MFA device, or session (CRED-04)
+    - SPII or C3 data sent to an external party without approved encryption and approval (PII-03, Section 9.3)
+    - C2 or C3 data entered into an unapproved AI tool, personal account, or prohibited repository (PII-06, Section 9.2)
+    - C3 content shared via "Anyone with the link" or to a personal email address (Section 9.3)
+    - Disabling or circumventing security controls (ACC-10)
+    - Deleting data under legal hold (Section 10.1)
+  Response: SOC notified within 15 minutes of detection; containment (revoke, rotate, recall, or delete) within 1 hour; Legal privacy assessment within 24 hours; manager and HRBP notified; disciplinary review mandatory.
+
+V2 — HIGH
+  Examples:
+    - SPII sent in plaintext via internal email, chat, or ticket (internal recipients only) (PII-03)
+    - Production PII in a Non-Production Environment (PII-05)
+    - C2 data shared externally without an NDA or Data Owner approval
+    - Secret committed to an internal or private repository (CRED-03, CRED-07)
+    - C3 access without a valid RDAR, or access continuing after grant expiry or contract end (ACC-03, ACC-06, ACC-08)
+    - Use of a shared or generic account (CRED-09)
+    - SPII exported without an approved DER (PII-09)
+    - SPII collected from a candidate or new hire via email or chat (PII-12)
+  Response: SOC triage within 4 hours; containment within 24 hours; manager and Data Owner notified; eligible for a written warning.
+
+V3 — MEDIUM
+  Examples:
+    - C2 or C3 document missing a required sensitivity label (Section 5.2)
+    - Export of 500 or more non-sensitive PII records without a DER (PII-09)
+    - C2 data stored in a corporate but non-approved location
+    - Uncertified access review beyond the 14-day deadline (ACC-05)
+    - Mandatory security training overdue by more than 10 business days (HR-POL-101 Section 7.5)
+    - Data subject request not forwarded within 2 business days (PII-08)
+  Response: Remediation by Data Steward or manager within 5 business days; recorded in the violation register.
+
+V4 — LOW
+  Examples:
+    - Unlocked, unattended workstation; clean desk lapse (PII-10)
+    - Printed C2 material left unattended at a printer
+    - Minor procedural lapses without data exposure
+  Response: Coaching; recorded. Three V4 violations within 12 months escalate to V3.
+
+12.2 Severity Modifiers:
+  Raise ONE level if any apply: data exposed externally; 500 or more data subjects affected; involves children's or health data; repeat violation within 12 months; intentional or malicious conduct; attempted concealment.
+  Lower ONE level (at CISO discretion) if the violation was self-reported within 1 hour of occurrence. Credential exposures may never be lowered below V2.
+
+12.3 Disciplinary Framework (applied by HR in consultation with Legal):
+  - V4: Coaching conversation.
+  - V3: Documented verbal warning and retraining within 10 business days.
+  - V2: Written warning, retraining, and access review. A second V2 within 12 months results in a final written warning.
+  - V1: Final written warning up to and including termination. Intentional V1 violations result in termination and potential legal action.
+  - Third parties: contractual remedies, including access revocation and contract termination.
+
+12.4 Illustrative Violation Scenarios (Annex B — for training and calibration of automated compliance review):
+
+  Scenario 1 — Slack channel #team-dbas:
+    "Prod DB admin password is Winter2026! — use it until CyberArk is back up."
+    Finding: VIOLATION. CRED-03 (plaintext credential), CRED-04 (sharing), CRED-01 (season/year pattern). Severity: V1 Critical (exposed to channel members).
+    Required Action: Delete the message; rotate the credential within 1 hour; open a SOC incident; review channel membership.
+
+  Scenario 2 — Email to an external benefits broker with unencrypted attachment "Q3_new_hires.xlsx" containing names, SSNs (e.g., 123-45-6789), and dates of birth for 42 employees.
+    Finding: VIOLATION. PII-03, Section 9.3. Severity: V1 Critical (external + SPII).
+    Required Action: Attempt message recall; notify SOC and Legal; Legal breach assessment within 24 hours.
+
+  Scenario 3 — ServiceNow ticket comment by an HR coordinator: "Employee's Aadhaar 2345 6789 0123 attached for verification."
+    Finding: VIOLATION. PII-03 (SPII in ticket), PII-12 (improper collection channel). Severity: V2 High (internal only).
+    Required Action: Redact the field; move the record to Workday; retrain the coordinator.
+
+  Scenario 4 — A developer refreshes the QA database with the full production customer table (1.2 million records) for performance testing.
+    Finding: VIOLATION. PII-05. Base severity V2 High, raised to V1 Critical (more than 500 data subjects, per 12.2).
+    Required Action: Purge the QA dataset; replace with TDM-generated synthetic data; Data Owner and DPO review.
+
+  Scenario 5 — A support engineer pastes a customer chat transcript containing names, email addresses, and order numbers into a public consumer AI chatbot to generate a summary.
+    Finding: VIOLATION. PII-06 (C2 data in an unapproved AI tool). Severity: V1 Critical.
+    Required Action: SOC incident; Legal assessment of disclosure to a third party; redirect the user to Corvanta Assist.
+
+  Scenario 6 — A commit to internal repository "payments-service" includes config.yaml containing an AWS access key ID (AKIA...) and aws_secret_access_key. The file is removed in the next commit.
+    Finding: VIOLATION. CRED-03, CRED-07. Severity: V2 High (internal repository). Would be V1 Critical if the repository were public.
+    Required Action: Treat the key as exposed; revoke and rotate within 1 hour; purge from git history; AppSec review.
+
+  Scenario 7 — Email from HR to a hiring manager: "Confirming the new hire's I-9 verification is complete. Employee ID CVT-108812; SSN on file ending in 6789."
+    Finding: NO VIOLATION. Value is masked per PII-04; the employee ID is non-sensitive PII handled internally.
+
+  Scenario 8 — Runbook step: "Check out the break-glass credential from CyberArk Safe NET-BREAKGLASS-PROD."
+    Finding: NO VIOLATION. References the vault location, not the credential (CRED-03).
+
+  Scenario 9 — A contractor's access to a C3 analytics workspace remains active 12 days after the contract end date.
+    Finding: VIOLATION. ACC-06, ACC-08. Severity: V2 High.
+    Required Action: Revoke immediately; review access logs for the 12-day period; sponsor retraining.
+
+  Scenario 10 — A manager shares the SharePoint folder "FY27 Reorganization Plan — RESTRICTED" using "Anyone with the link."
+    Finding: VIOLATION. Section 9.3. Severity: V1 Critical (C3 with potential external exposure).
+    Required Action: Revoke the link immediately; review access logs; apply the correct sensitivity label.
+
+13. INCIDENT & VIOLATION REPORTING
+
+13.1 Duty to Report: All workforce members must report suspected violations, data incidents, credential exposures, and lost or stolen devices within 1 hour of discovery.
+13.2 Reporting Channels: SOC (24x7) at security@corvanta.com; Slack #sec-report; phone ext. 7233 (SAFE) or +1 (512) 555-0172; the "Report Phish" button in Outlook. Suspected intentional misconduct may be reported anonymously through the Ethics Hotline.
+13.3 Non-Retaliation: Corvanta prohibits retaliation against anyone who reports a concern in good faith.
+13.4 Breach Determination: The Office of the General Counsel (Deputy DPO Jonathan Albrecht or delegate), with technical input from the SOC (Siobhán Gallagher or delegate), determines all notification obligations, including:
+    - GDPR Article 33: notification to the lead supervisory authority (Irish Data Protection Commission) within 72 hours of awareness;
+    - GDPR Article 34: notification to affected individuals without undue delay where there is high risk;
+    - US state breach notification laws;
+    - India DPDP Act: notification to the Data Protection Board of India and affected Data Principals;
+    - Contractual customer notifications (typically 48–72 hours under customer DPAs).
+    No workforce member may notify regulators, customers, or the media without Legal authorization.
+13.5 Lost or Stolen Devices: Report within 1 hour. IT initiates a remote wipe.
+
+14. EXCEPTIONS
+
+14.1 Exception requests are submitted through ServiceNow GRC "Policy Exception Request" and must include the business justification, compensating controls, a risk assessment, and the requested duration.
+14.2 Approval Authority and Maximum Duration:
+    - Controls related to C1/C2 data: Data Owner + CISO delegate; maximum 12 months.
+    - Controls related to C3 data, PII rules, or CRED rules: CISO AND General Counsel (or Deputy DPO); maximum 90 days.
+14.3 NON-WAIVABLE CONTROLS: No exception may be granted for CRED-03 (plaintext credentials), CRED-04 (credential sharing), PII-06 as applied to C3 data, or ACC-10 (circumvention of security controls).
+
+15. ROLES & RESPONSIBILITIES
+
+- CISO: Policy owner; approves exceptions; oversees enforcement and the violation register.
+- General Counsel / DPO / Deputy DPO: Policy co-owner; owns regulatory interpretation, DPIAs, and breach notification decisions.
+- Data Owners: Classify data; approve RDARs and DERs; certify access reviews.
+- Data Stewards: Maintain metadata and data quality; remediate V3/V4 findings.
+- Data Custodians: Implement and operate technical controls (encryption, DLP, logging, backups).
+- People Managers: Ensure team compliance; approve access requests; complete access reviews on time.
+- SOC: Monitors, triages, and contains violations and incidents.
+- Internal Audit: Conducts an annual independent audit of SEC-04 compliance and reports to the Audit & Risk Committee.
+- All Workforce Members: Comply with this Policy, complete training, and report violations.
+
+16. TRAINING & ATTESTATION
+
+16.1 All workforce members must complete SEC-102 (Data Governance, Classification & SEC-04 Attestation) within 10 business days of their start date (HR-POL-101 Section 7.2) and annually by January 31.
+16.2 Failure to complete training results in access suspension per HR-POL-101 Section 7.5.
+16.3 Newly appointed Data Owners and Data Stewards must complete DGV-310 (Data Stewardship) within 30 calendar days of appointment.
+
+17. RELATED DOCUMENTS
+
+- HR-POL-101     New Employee Onboarding Policy
+- IT-RB-NET-001  Severity 1 Network Outage Runbook
+- IR-PLAN-001    Incident Response Plan
+- IT-AUP-002     IT Acceptable Use Policy
+- AI-REG-01      Approved AI Tools Register
+- NETSEC-STD-007 Firewall Rule Governance Standard
+- DR-PLAN-003    Disaster Recovery Plan
+- KB-DIR-006     Subject Matter Expert (SME) Directory
+
+ANNEX A — DLP DETECTION PATTERN LIBRARY
+
+ID    | Data Type                       | Pattern / Logic                                                               | Default Severity
+------|---------------------------------|-------------------------------------------------------------------------------|-----------------
+DP-01 | US Social Security Number       | \b(?!000|666|9\d{2})\d{3}-(?!00)\d{2}-(?!0000)\d{4}\b + keyword proximity     | SPII / C3
+      |                                 | ("SSN", "social security") within 50 characters                               |
+DP-02 | Payment card number             | \b(?:\d[ -]?){13,19}\b + Luhn checksum validation                             | SPII / C3
+DP-03 | India Aadhaar                   | \b[2-9]\d{3}[ -]?\d{4}[ -]?\d{4}\b + Verhoeff checksum                        | SPII / C3
+DP-04 | India PAN                       | \b[A-Z]{5}[0-9]{4}[A-Z]\b                                                     | SPII / C3
+DP-05 | Irish PPSN                      | \b\d{7}[A-W][A-IW]?\b + keyword proximity ("PPS", "PPSN")                     | SPII / C3
+DP-06 | IBAN                            | \b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b + mod-97 validation                          | SPII / C3
+DP-07 | Password disclosure             | (?i)\b(password|passwd|pwd|passcode|pin)\b\s*(is|=|:)?\s*\S{6,}               | Credential / C3
+DP-08 | AWS access key ID               | \b(AKIA|ASIA)[0-9A-Z]{16}\b                                                   | Credential / C3
+DP-09 | Private key block               | -----BEGIN (RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY( BLOCK)?-----            | Credential / C3
+DP-10 | Generic API key / token         | (?i)(api[_-]?key|secret|token|bearer|client[_-]?secret)\s*[:=]\s*['"]?        | Credential / C3
+      |                                 | [A-Za-z0-9_\-\.]{20,}                                                         |
+DP-11 | Connection string with password | (?i)(postgres|mysql|mongodb(\+srv)?|sqlserver|redis)://[^:\s]+:[^@\s]+@       | Credential / C3
+DP-12 | GitHub token                    | \bgh[pousr]_[A-Za-z0-9]{36}\b                                                 | Credential / C3
+DP-13 | Slack token                     | \bxox[baprs]-[A-Za-z0-9-]{10,}\b                                              | Credential / C3
+DP-14 | Bulk personal data              | 25 or more email addresses, OR 10 or more SPII matches, in a single message   | PII-09 review
+      |                                 | or file                                                                       |
+DP-15 | Classification marker mismatch  | Content contains "RESTRICTED" or "C3" marker but is unlabeled, or is shared   | Section 5.2 / 9.3
+      |                                 | to an external domain or via an anonymous link                                |
+
+REVISION HISTORY
+
+Version | Date        | Summary of Changes                                                          | Author
+--------|-------------|-----------------------------------------------------------------------------|------------------------------
+4.0     | 2024-03-01  | Adopted 4-tier classification (C0–C3); aligned to ISO/IEC 27001:2022        | Office of the CISO
+5.0     | 2026-03-01  | Added PII-06 (AI tools); DPDP Act alignment; CRED-01 minimum raised to 14   | Office of the CISO / Legal
+        |             | characters; added Annex B violation scenarios                               |
+5.1     | 2026-08-20  | Added DP-12/DP-13 token patterns; Section 14.3 non-waivable controls; chat  | Office of the CISO / Legal
+        |             | retention updated to 18 months                                              |
+
+================================================================================
+END OF POLICY — SEC-04 v5.1
+================================================================================

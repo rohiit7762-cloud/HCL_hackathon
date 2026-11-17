@@ -1,0 +1,406 @@
+================================================================================
+CORVANTA TECHNOLOGIES, INC.
+INFRASTRUCTURE OPERATIONS — INCIDENT RUNBOOK
+================================================================================
+Document ID:      IT-RB-NET-001
+Title:            Severity 1 (SEV1) Network Outage — Incident Response Runbook
+Version:          3.4
+Effective Date:   June 1, 2026
+Last Revised:     October 28, 2026
+Owner:            Network Engineering, Infrastructure Operations
+Maintainer:       Tomás Reyes, Manager, Network Engineering
+Approved By:      Grace Lindqvist, Director, Infrastructure Operations
+                  Victor Ahn, Vice President, Infrastructure
+Classification:   C2 – Confidential (per SEC-04). Contains internal hostnames and
+                  IP addressing. Do not distribute outside Corvanta.
+Review Cadence:   Quarterly, and after every SEV1 Post-Incident Review (PIR)
+================================================================================
+
+0. CRITICAL NOTICES — READ BEFORE PROCEEDING
+
+0.1 CREDENTIALS: This runbook contains NO passwords, keys, or SNMP community strings, in compliance with SEC-04 Rule CRED-03. All device credentials are checked out from CyberArk PAM. Break-glass credentials reside in CyberArk Safe "NET-BREAKGLASS-PROD" and require dual approval (Incident Commander + Network Engineering Manager). Never paste credentials into Slack, Zoom chat, or ServiceNow.
+
+0.2 SECURITY SUSPICION: If symptoms indicate a DDoS attack, an unauthorized configuration change, or an intrusion, STOP and invoke Section 9.4 BEFORE rebooting, wiping, or rolling back any device. Evidence preservation takes precedence over speed of restoration.
+
+0.3 EMERGENCY CHANGES: All mitigating changes during a SEV1 are Emergency Changes. Verbal approval by the Incident Commander (IC) is sufficient during the incident. A retroactive ServiceNow Change Request (type: Emergency) must be filed within 24 hours.
+
+0.4 TIMESTAMPS: The Scribe records all actions and decisions in the incident Slack channel using UTC timestamps.
+
+1. PURPOSE AND SCOPE
+
+1.1 This runbook defines the detection, triage, diagnosis, mitigation, escalation, communication, recovery validation, and post-incident review procedures for SEV1 network outages affecting:
+    - Primary Data Center DFW-DC1 (Dallas, TX)
+    - Secondary / DR Data Center IAD-DC2 (Ashburn, VA)
+    - Corporate HQ AUS-HQ (Austin, TX) and regional offices CLT-OFC, DUB-OFC, BLR-OFC
+    - Hybrid cloud connectivity (AWS us-east-1, Azure East US 2)
+    - Internet edge and customer-facing ingress (portal.corvanta.com, api.corvanta.com)
+
+1.2 Out of scope: application-only outages (APP-RB series) and identity platform outages (IAM-RB-002). Network Engineering supports those incidents in an advisory capacity.
+
+2. SEVERITY CLASSIFICATION
+
+Severity | Criteria (any one condition)                                         | Ack    | IC Engaged | Update Cadence | Target Mitigation
+---------|----------------------------------------------------------------------|--------|------------|----------------|------------------
+SEV1     | (a) Total loss of connectivity to DFW-DC1 or IAD-DC2                 | 5 min  | 15 min     | Every 30 min   | 4 hours
+         | (b) Loss of Internet ingress/egress for customer-facing services     |        |            |                |
+         | (c) 25% or more of the workforce unable to reach corporate network,  |        |            |                |
+         |     ZTNA, or SaaS                                                    |        |            |                |
+         | (d) Loss of BOTH AWS Direct Connect circuits                         |        |            |                |
+         | (e) Suspected network-based security incident with active impact     |        |            |                |
+SEV2     | Packet loss >5% or latency >2x baseline on core paths; single office | 15 min | 30 min     | Every 60 min   | 8 hours
+         | down; loss of redundancy (single circuit) without user impact        |        |            |                |
+SEV3     | Localized degradation; non-critical device failure with redundancy   | 1 hour | N/A        | Daily          | Next business day
+SEV4     | Cosmetic, informational, or monitoring-only issue                    | 1 BD   | N/A        | N/A            | Planned work
+
+Rule: If in doubt, declare SEV1. Only the IC may downgrade severity.
+Customer SLA reference: 99.95% monthly availability for portal.corvanta.com and api.corvanta.com.
+
+3. ENVIRONMENT REFERENCE
+
+3.1 Site Addressing:
+
+Site           | Location             | Role                    | Management     | Production / User
+---------------|----------------------|-------------------------|----------------|------------------
+DFW-DC1        | Dallas, TX           | Primary data center     | 10.10.0.0/16   | 10.11.0.0/16
+IAD-DC2        | Ashburn, VA          | Secondary / DR          | 10.20.0.0/16   | 10.21.0.0/16
+AUS-HQ         | Austin, TX           | Corporate HQ            | —              | 10.30.0.0/16
+CLT-OFC        | Charlotte, NC        | Regional office / SOC   | —              | 10.40.0.0/16
+DUB-OFC        | Dublin, Ireland      | EMEA HQ / SOC           | —              | 10.50.0.0/16
+BLR-OFC        | Bengaluru, India     | APAC hub / SOC          | —              | 10.60.0.0/16
+AWS us-east-1  | Cloud                | Production VPCs         | —              | 10.100.0.0/14
+Azure EUS2     | Cloud                | DR and M365 workloads   | —              | 10.120.0.0/16
+OOB Network    | All DCs              | Out-of-band management  | 10.250.0.0/16  | —
+
+Public prefixes: 198.51.100.0/24 (DFW-DC1), 203.0.113.0/24 (IAD-DC2). Corvanta public ASN: AS64500.
+
+3.2 Critical Devices — DFW-DC1:
+
+Hostname               | Function                                    | Platform                          | Mgmt IP
+-----------------------|---------------------------------------------|-----------------------------------|--------------------
+dfw1-edge-rtr01        | Internet edge router — ISP-A (Lumen)        | Cisco ASR 1006-X (IOS-XE)         | 10.10.0.11
+dfw1-edge-rtr02        | Internet edge router — ISP-B (Zayo)         | Cisco ASR 1006-X (IOS-XE)         | 10.10.0.12
+dfw1-spine-01 to -04   | Data center fabric spine (EVPN/VXLAN)       | Arista 7280R3 (EOS)               | 10.10.0.31–.34
+dfw1-leaf-01 to -32    | Data center fabric leaf (MLAG pairs)        | Arista 7050X3 (EOS)               | 10.10.1.1–.32
+dfw1-fw-pa01 / pa02    | Perimeter firewall HA pair (Active/Passive) | Palo Alto PA-5450 (PAN-OS 11.1)   | 10.10.0.41 / .42
+dfw1-lb-f5-01 / 02     | Application delivery + GSLB (Active/Standby)| F5 BIG-IP i10800 (TMOS 17.1)      | 10.10.0.51 / .52
+dfw1-dns-01 / 02       | Internal DNS / DHCP (Grid members)          | Infoblox NIOS                     | 10.10.5.10 / .11
+dfw1-dx-rtr01          | AWS Direct Connect router (dxcon-ffq7ab12,  | Cisco ASR 1002-HX                 | 10.10.0.61
+                       | 10 Gbps)                                    |                                   |
+dfw1-zpa-ac01 to -04   | Zscaler Private Access App Connectors       | RHEL 9 VM                         | 10.10.7.11–.14
+dfw1-jump-01           | Bastion / jump host                         | RHEL 9                            | 10.10.0.21
+dfw1-oob-01            | Out-of-band console server (LTE backup)     | Opengear OM2200                   | 10.250.0.10
+
+3.3 Critical Devices — IAD-DC2 (mirrors DFW naming):
+    iad2-edge-rtr01/02 (10.20.0.11/.12), iad2-spine-01 to -04, iad2-fw-pa01/02 (10.20.0.41/.42), iad2-lb-f5-01/02 (10.20.0.51/.52), iad2-dns-01/02 (10.20.5.10/.11), iad2-dx-rtr01 (dxcon-gg2c9k47, 10 Gbps), iad2-zpa-ac01 to -04, iad2-jump-01 (10.20.0.21), iad2-oob-01 (10.250.1.10).
+
+3.4 WAN and Cloud Connectivity:
+    - Inter-DC: 2 x 100G DWDM waves (Lumen LMN-WAV-448120; Zayo ZYO-WAV-77310).
+    - Branch WAN: Cisco Catalyst SD-WAN; Manager: sdwan-mgr01.corp.corvanta.net. Edges: aus-sdwan-01/02, clt-sdwan-01, dub-sdwan-01/02, blr-sdwan-01/02. All edges have LTE failover.
+    - Remote access: Zscaler Private Access (ZPA). Legacy VPN decommissioned in 2025.
+    - AWS: Transit Gateway tgw-0c4e1a9b27f3d5e81 (us-east-1); Direct Connect Gateway dxgw-corvanta-prod; backup Site-to-Site VPN vpn-0b7d3e19c4a2f6d08.
+    - Azure: ExpressRoute circuit er-corvanta-eus2-01 (2 Gbps), resource group rg-network-prod.
+
+3.5 Tooling:
+    - Synthetic monitoring: ThousandEyes (test group "Corvanta-Edge-Path")
+    - Metrics: Datadog Network Device Monitoring (dashboard "NET | Core Health")
+    - Logs / SIEM: Splunk Enterprise Security (index=network, index=pan_logs)
+    - Paging: PagerDuty — services NET-CORE-PROD; schedules NetEng-Primary, NetEng-Secondary, Major-Incident-Manager, SOC-IR-Primary, NetSec-Escalation, Cloud-Arch-Escalation
+    - ITSM: ServiceNow (Incident, Change, CMDB)
+    - Config backup: Oxidized (hourly; git repository "netconfig-backups")
+    - Communications: Slack incident bot, Zoom SEV1 bridge, Statuspage (status.corvanta.com)
+    - Secrets: CyberArk PAM
+
+4. INCIDENT ROLES
+
+- Incident Commander (IC): Major Incident Manager on-call. Owns the incident, severity, decisions, and escalation. The IC does NOT perform hands-on troubleshooting.
+- Technical Lead: Network Engineering L2/L3 on-call. Directs diagnosis and mitigation.
+- Communications Lead: Issues internal updates and Statuspage posts.
+- Scribe: Maintains the UTC timeline and action log.
+- Subject Matter Experts (SMEs): Engaged per Section 9.3 (see SME Directory KB-DIR-006).
+
+5. DETECTION AND DECLARATION (T+0 to T+15 MINUTES)
+
+5.1 Detection Triggers:
+    - PagerDuty alert NET-CORE-DOWN, NET-EDGE-BGP-DOWN, or NET-DX-BOTH-DOWN
+    - ThousandEyes: path loss above 50% from 3 or more agents for 3 consecutive rounds
+    - Service Desk: 20 or more connectivity tickets within 10 minutes
+    - Customer Success: report of portal or API unavailability
+
+5.2 Step 1 — Acknowledge the PagerDuty alert within 5 minutes. Unacknowledged alerts auto-escalate to NetEng-Secondary at 5 minutes and to the Network Engineering Manager at 10 minutes.
+
+5.3 Step 2 — Validate the alert is genuine (not a monitoring failure) from at least two independent vantage points: ThousandEyes agents in two regions AND the jump host.
+
+5.4 Step 3 — Declare SEV1 in Slack:
+        /incident declare sev1 "DFW-DC1 network outage - <brief scope>"
+    The incident bot creates channel #inc-<YYYYMMDD>-net-sev1, opens the Zoom bridge, creates a ServiceNow P1 incident (assignment group NETENG-L2), and pages the IC.
+
+5.5 Step 4 — Post the Initial Assessment (Appendix B template) within 15 minutes of declaration.
+
+5.6 Step 5 — The IC confirms the role assignments (Technical Lead, Communications Lead, Scribe).
+
+6. TRIAGE AND SCOPING (T+15 to T+30 MINUTES)
+
+6.1 Answer the five scoping questions and post the answers in the incident channel:
+    Q1. Which sites, segments, or services are affected?
+    Q2. Is impact internal, external (customer-facing), or both?
+    Q3. When did impact begin (first alert, UTC)?
+    Q4. Was any change implemented on network CIs in the prior 72 hours?
+    Q5. Are there security indicators (traffic spikes, unknown sources, threat logs, unexplained config changes)?
+
+6.2 Quick Checks:
+    - ThousandEyes: "Corvanta-Edge-Path" view — identify the failing hop.
+    - Datadog: "NET | Core Health" — interface errors, CPU, BGP state.
+    - ServiceNow change calendar: Change Requests where CI group = "Network-Prod" AND Actual End within the last 72 hours.
+    - Splunk:
+        index=network (sourcetype=cisco:ios OR sourcetype=arista:eos) (BGP OR OSPF OR "%LINK-3-UPDOWN" OR LINEPROTO) earliest=-2h
+        | stats count by host, message | sort - count
+
+    Historical note: 62% of FY2025 SEV1 network incidents were change-induced. Always check Q4 first.
+
+6.3 Diagnostic Decision Tree:
+    - Entire DC unreachable, including management    -> 7.1 (OOB access), then 7.3
+    - Internet-facing services down, internal OK     -> 7.2 (Edge/ISP) and 7.4 (Firewall)
+    - Fabric-wide intermittent loss / high latency   -> 7.5 (L2 loop / storm)
+    - Single office or branch down                   -> 7.6 (SD-WAN)
+    - Cloud workloads unreachable from on-premises   -> 7.7 (Hybrid cloud)
+    - Name resolution failures                       -> 7.8 (DNS/DHCP)
+    - Change implemented in prior 72 hours           -> 7.9 (Rollback), in parallel with the above
+
+7. DIAGNOSTIC AND MITIGATION PROCEDURES
+
+7.1 Establish Access
+    1. Connect to the jump host via ZPA: ssh <corp-id>@dfw1-jump-01.corp.corvanta.net (Okta + YubiKey).
+    2. If the jump host is unreachable, connect through the ZPA OOB segment to dfw1-oob-01 (LTE-backed). Check out the credential from CyberArk Safe "NET-OOB-PROD."
+    3. Console port map on dfw1-oob-01: Port 1 = dfw1-edge-rtr01; Port 2 = dfw1-edge-rtr02; Port 3 = dfw1-fw-pa01; Port 4 = dfw1-fw-pa02; Ports 5–8 = dfw1-spine-01 to -04.
+    4. If OOB is also unavailable: open a Remote Hands ticket with the colocation provider (target ETA 30 minutes) and escalate immediately to the T+30 tier (Section 9.1).
+
+7.2 Internet Edge / ISP Failure
+    1. On dfw1-edge-rtr01 and dfw1-edge-rtr02:
+        show bgp ipv4 unicast summary
+        show interfaces TenGigabitEthernet0/1/0 | include line protocol|input errors|CRC|rate
+        show logging | include BGP-5-ADJCHANGE|LINK-3-UPDOWN
+       Expected: ISP neighbor state Established; prefixes received 950,000 or more (full table).
+    2. If the ISP-A neighbor is Idle/Active and the interface is down: this is a circuit failure. Open a P1 ticket with ISP-A (circuit LMN-IP-7731045) and confirm traffic has failed over to ISP-B (ThousandEyes path view; "show bgp ipv4 unicast <reference-prefix>" using prefixes in KB0010488).
+    3. If ISP-A BGP is Established but blackholing traffic (failover not occurring), shut the ISP-A neighbor with IC approval:
+        configure terminal
+         router bgp 64500
+          neighbor 192.0.2.1 shutdown
+        end
+       Verify inbound traffic shifts to ISP-B within 3–5 minutes. Log as an Emergency Change.
+    4. If BOTH ISPs are down: check router health ("show platform", "show processes cpu sorted | exclude 0.00", power supply status). If not restorable within 30 minutes, prepare for site failover (Section 8).
+
+7.3 Core Routing and Data Center Fabric (Arista EOS)
+    1. On dfw1-spine-01 to -04 and affected leaves:
+        show ip bgp summary vrf all
+        show bgp evpn summary
+        show mlag
+        show mlag config-sanity
+        show interfaces status errdisabled
+        show logging last 30 minutes
+       Expected: all underlay and EVPN neighbors Estab; MLAG state Active; peer-link Up; no config-sanity inconsistencies.
+    2. If a spine shows sustained CPU above 85% or control-plane flapping, drain it with IC approval:
+        maintenance
+           unit System
+              quiesce
+       Confirm traffic redistributes across the remaining spines before further troubleshooting.
+
+7.4 Perimeter Firewall (Palo Alto PAN-OS)
+    1. On dfw1-fw-pa01 and dfw1-fw-pa02:
+        show high-availability state
+        show system resources
+        show running resource-monitor minute last 5
+        show session info
+        show counter global filter delta yes severity drop
+    2. Thresholds:
+       - Dataplane CPU above 90% sustained for 5 minutes, OR session table utilization above 90%: treat as a potential DDoS attack or session exhaustion. Invoke Section 9.4 and engage Marcus Oyelaran (Principal Network Security Engineer) BEFORE applying mitigation.
+    3. HA failure (active degraded, passive healthy): on the ACTIVE unit:
+        request high-availability state suspend
+       Verify the peer transitions to Active. After RCA, restore with:
+        request high-availability state functional
+       NEVER suspend both units.
+    4. Split-brain (both units Active): immediately suspend dfw1-fw-pa02 and open a P1 case with Palo Alto Networks support.
+
+7.5 Layer 2 Loop / Broadcast Storm
+    1. Symptoms: fabric-wide packet loss, leaf CPU spikes, MAC flap log entries.
+        show interfaces counters rates | nz
+        show logging | include MACFLAP|MLAG|STP
+        show spanning-tree blockedports
+    2. Identify the interface with abnormal broadcast/multicast packets-per-second and shut it with IC approval:
+        configure
+         interface Ethernet<x>
+          shutdown
+    3. Post-incident: confirm storm-control is configured on all host-facing ports ("storm-control broadcast level 1").
+
+7.6 Branch / SD-WAN
+    1. In SD-WAN Manager: Monitor > Devices — verify edge reachability and control connections.
+    2. On the affected edge:
+        show sdwan control connections
+        show sdwan bfd sessions
+    3. Edges fail over to LTE automatically. If LTE failover does not occur, engage the carrier and dispatch local IT.
+    4. A branch outage is SEV1 ONLY if AUS-HQ is fully down (25% or more of the workforce). Otherwise, downgrade to SEV2.
+
+7.7 Hybrid Cloud Connectivity
+    AWS:
+        aws directconnect describe-virtual-interfaces --region us-east-1 --query "virtualInterfaces[].{id:virtualInterfaceId,state:virtualInterfaceState,bgp:bgpPeers[0].bgpStatus}"
+        aws ec2 describe-transit-gateway-attachments --filters Name=transit-gateway-id,Values=tgw-0c4e1a9b27f3d5e81
+        aws ec2 describe-vpn-connections --vpn-connection-ids vpn-0b7d3e19c4a2f6d08 --query "VpnConnections[].VgwTelemetry"
+      On dfw1-dx-rtr01: show bgp ipv4 unicast neighbors 169.254.10.1 | include BGP state
+      If both DX circuits are down, confirm the backup VPN tunnels are UP and carrying routes. Engage Elena Vasquez-Hart (Principal Cloud Architect) and open an AWS Enterprise Support case at severity "Business-critical system down."
+    Azure:
+        az network express-route show --name er-corvanta-eus2-01 --resource-group rg-network-prod --query "{circuit:circuitProvisioningState, provider:serviceProviderProvisioningState}"
+        az network express-route list-route-tables --name er-corvanta-eus2-01 --resource-group rg-network-prod --path primary --peering-name AzurePrivatePeering
+      Engage Rohan Mehta (Senior Cloud Architect — Azure & Hybrid) and open a Microsoft Unified Support Severity A case.
+
+7.8 DNS / DHCP
+        dig @10.10.5.10 portal.corvanta.com +short
+        dig @10.20.5.10 portal.corvanta.com +short
+    If DFW resolvers fail but IAD resolvers respond, clients will use the secondary resolver (10.20.5.10) via DHCP option 6. Check Infoblox Grid Manager > Grid > Members for service status and restart the DNS service on the affected member with IC approval.
+
+7.9 Rollback of a Recent Change
+    1. Compare the running configuration against the last known-good version in Oxidized (git repository "netconfig-backups").
+    2. Rollback commands (IC approval required):
+       - Cisco IOS-XE:  show archive
+                        configure replace bootflash:<archive-file> list
+       - Arista EOS:    configure replace checkpoint:<checkpoint-name>
+       - Palo Alto:     configure
+                        load config version <version-number>
+                        commit
+    3. If the offending change has NO approved ServiceNow Change Request, or was made by an unrecognized account: treat it as a potential security incident. Invoke Section 9.4 and DO NOT roll back until the SOC has captured the running configuration as evidence.
+
+8. SITE FAILOVER / DISASTER RECOVERY
+
+8.1 Trigger: DFW-DC1 is not recoverable within 60 minutes of declaration, OR a facility event occurs (power, cooling, fire, or physical access loss).
+
+8.2 Authority: The IC recommends; Victor Ahn (VP, Infrastructure) or Linda Marchetti (CIO) approves.
+
+8.3 Procedure summary (the full procedure is in DR-PLAN-003):
+    1. Validate IAD-DC2 health using Sections 7.2–7.4 against iad2-* devices.
+    2. Disable DFW members in GSLB wide-IP pools for portal.corvanta.com and api.corvanta.com:
+        tmsh modify gtm pool a <pool-name> members modify { <dfw-member> { disabled } }
+    3. Apply pre-staged route-map RM-DR-ADVERTISE on iad2-edge-rtr01/02 to advertise 198.51.100.0/24 from IAD-DC2.
+    4. The DBA team executes database failover per DB-RB-004.
+    5. Validate synthetic transactions for portal and API (100% success for 15 minutes).
+    Recovery objectives (Tier 1 services): RTO 4 hours; RPO 15 minutes.
+
+9. ESCALATION PROTOCOL
+
+9.1 Time-Based Escalation Matrix (elapsed time since SEV1 declaration without mitigation):
+
+Elapsed | Escalate To                                                          | Initiated By       | Method
+--------|----------------------------------------------------------------------|--------------------|----------------------
+T+0     | Network Engineering On-Call L2 (PagerDuty NetEng-Primary);           | Automated          | Page
+        | Major Incident Manager (IC)                                          |                    |
+T+15    | Network Engineering L3 / Secondary On-Call (NetEng-Secondary);       | IC                 | Page + Slack
+        | domain SMEs per Section 9.3                                          |                    |
+T+30    | Tomás Reyes, Manager, Network Engineering;                           | IC                 | Phone + Page
+        | Grace Lindqvist, Director, Infrastructure Operations                 |                    |
+T+60    | Victor Ahn, VP Infrastructure. Open vendor P1 cases (Section 9.5)    | Director, Infra Ops| Phone
+        | if not already open. Executive summary to exec-incident@corvanta.com |                    |
+T+120   | Linda Marchetti, CIO; Executive bridge convened;                     | VP Infrastructure  | Phone
+        | Customer Success leadership for customer communications              |                    |
+T+240   | MTTR target breached: CEO staff briefed via CIO; Legal engaged for   | CIO                | Phone + Email
+        | contractual SLA review                                               |                    |
+
+9.2 Mandatory Immediate Escalation (regardless of elapsed time):
+    - ANY indication of security compromise -> SOC (Section 9.4).
+    - Customer or employee data potentially exposed -> SOC AND Legal (Jonathan Albrecht, Senior Corporate Counsel, Privacy & Data Protection), per SEC-04 Section 13.
+    - Payment processing impact -> Finance Systems Lead and PCI Compliance.
+    - Physical facility event -> Data Center Facilities and Corporate Security.
+    - Incident exceeding 12 hours -> HRBP (Priya Raman) for staff rotation and fatigue management under HR-POL-140.
+
+9.3 SME Engagement (source: SME Directory KB-DIR-006):
+
+Domain                                              | Primary SME                                        | Backup SME
+----------------------------------------------------|----------------------------------------------------|----------------------
+Firewall, DDoS, Zero Trust/ZPA, perimeter security  | Marcus Oyelaran, Principal Network Security Eng.   | Siobhán Gallagher
+Security incident response, forensics, SIEM         | Siobhán Gallagher, Lead, Security Ops & IR         | Marcus Oyelaran
+AWS Direct Connect, Transit Gateway, AWS networking | Elena Vasquez-Hart, Principal Cloud Architect      | Rohan Mehta
+Azure ExpressRoute, hybrid DR                       | Rohan Mehta, Senior Cloud Architect                | Elena Vasquez-Hart
+Data exposure, breach notification, regulatory      | Jonathan Albrecht, Senior Corporate Counsel        | Office of the GC
+
+9.4 Security-Suspected Outage Protocol:
+    1. Page SOC on-call (PagerDuty SOC-IR-Primary) and post in #sec-incident-response.
+    2. DO NOT reboot, wipe, or roll back affected devices until the SOC Lead approves.
+    3. Capture evidence: "show running-config", "show logging", and "show tech-support" (Cisco/Arista); system logs and a tech support file (Palo Alto). Upload to \\dfw1-ir-evidence01\cases\<INC-number> (C3 – Restricted access).
+    4. DDoS: Marcus Oyelaran (or the NetSec-Escalation on-call) is authorized to activate the upstream DDoS scrubbing service (contract DDOS-2025-014) via BGP diversion of the affected public prefix.
+    5. From this point, IR-PLAN-001 governs the security response. The network SEV1 continues in parallel under the same IC unless the CISO (Nathaniel Okafor) assumes command.
+
+9.5 Vendor Escalation:
+
+Vendor                     | Contract / Reference             | Severity to Request
+---------------------------|----------------------------------|-------------------------------------
+Cisco TAC                  | SVC-CSCO-88431                   | P1 — serial numbers in CMDB
+Arista TAC                 | ARI-SUP-20914                    | P1
+Palo Alto Networks Support | PAN-PS-55102 (Premium)           | Critical
+F5 Support                 | F5-ENT-30388                     | Sev 1
+ISP-A (Lumen)              | DFW: LMN-IP-7731045 / IAD: LMN-IP-7731188 | P1 circuit down
+ISP-B (Zayo)               | DFW: ZYO-IA-224519 / IAD: ZYO-IA-224577   | P1 circuit down
+AWS Enterprise Support     | Console case                     | Business-critical system down
+Microsoft Unified Support  | Portal case                      | Severity A
+Vendor phone numbers and portal links: ServiceNow KB0010472 "Network Vendor Contact Sheet."
+
+10. COMMUNICATIONS
+
+10.1 Cadence: initial update within 15 minutes of declaration; subsequent updates every 30 minutes or upon material change, whichever is sooner.
+10.2 Customer-facing impact: Statuspage post within 20 minutes of declaration, approved by the IC and Communications Lead.
+10.3 Distribution: incident Slack channel; it-major-incidents@corvanta.com; exec-incident@corvanta.com from T+60.
+10.4 Restrictions: public communications must NOT include internal hostnames, IP addresses, customer names, or speculation about root cause (SEC-04 Section 5 classification rules).
+
+11. RECOVERY VALIDATION — EXIT CRITERIA
+
+All of the following must be true before the IC declares "Resolved":
+    [ ] All BGP sessions Established on edge, fabric, and DX routers at both data centers
+    [ ] ThousandEyes: packet loss below 1% and latency within 20% of baseline for 30 consecutive minutes
+    [ ] Firewall HA pairs in Active/Passive with configuration synchronized
+    [ ] Portal and API synthetic transactions at 100% success for 15 minutes
+    [ ] No new related alerts for 30 minutes
+    [ ] Service Desk ticket inflow returned to baseline
+    [ ] ServiceNow incident updated with resolution code and timeline
+    [ ] Temporary mitigations (e.g., shut BGP neighbors, drained spines) tracked as follow-up Change Requests to restore redundancy within 5 business days
+
+12. POST-INCIDENT REVIEW (PIR)
+
+12.1 A blameless PIR meeting is held within 5 business days of resolution.
+12.2 The RCA document (5 Whys, Scribe timeline, contributing factors) is published to Confluence space NETOPS within 10 business days.
+12.3 Corrective actions are logged in Jira project NETOPS with label "sev1-capa." P1 actions are due within 30 days.
+12.4 Metrics recorded: MTTA, MTTR, customer-minutes impacted, SLA impact.
+12.5 This runbook is updated whenever the PIR identifies a procedural gap.
+
+APPENDIX A — QUICK REFERENCE COMMANDS
+
+Platform        | Health                                     | Routing                          | Logs
+----------------|--------------------------------------------|----------------------------------|--------------------------------
+Cisco IOS-XE    | show platform; show processes cpu sorted   | show bgp ipv4 unicast summary    | show logging | include ADJCHANGE
+Arista EOS      | show mlag; show interfaces status errdis.  | show ip bgp summary vrf all      | show logging last 30 minutes
+Palo Alto       | show high-availability state               | show routing protocol bgp summary| show counter global filter delta yes
+F5 BIG-IP       | tmsh show sys failover                     | tmsh show ltm pool <pool> members| /var/log/ltm
+SD-WAN          | show sdwan control connections             | show sdwan bfd sessions          | SD-WAN Manager > Monitor
+
+APPENDIX B — COMMUNICATION TEMPLATES
+
+[INITIAL] SEV1 DECLARED — <INC-number> — Network Outage: <scope>
+Start (UTC): <time> | Impact: <who/what is affected> | Status: Investigating
+IC: <name> | Tech Lead: <name> | Bridge: <Zoom link from PagerDuty incident>
+Next update: <time + 30 min UTC>
+
+[UPDATE] SEV1 — <INC-number> — Update #<n>
+Current status: <Investigating | Identified | Mitigating | Monitoring>
+Findings: <summary> | Actions in progress: <summary> | ETA (if known): <time>
+Next update: <time + 30 min UTC>
+
+[RESOLVED] SEV1 — <INC-number> — RESOLVED
+Resolved (UTC): <time> | Duration: <hh:mm> | Root cause (preliminary): <summary>
+Follow-ups: PIR scheduled <date>; RCA due <date>
+
+APPENDIX C — REVISION HISTORY
+
+Version | Date        | Summary of Changes                                                       | Author
+--------|-------------|--------------------------------------------------------------------------|---------------------------
+3.2     | 2025-11-03  | Added ZPA App Connector checks; removed legacy VPN procedures            | T. Reyes
+3.3     | 2026-02-17  | Added Section 9.4 Security-Suspected Protocol following INC0041877 PIR   | T. Reyes / S. Gallagher
+3.4     | 2026-10-28  | Updated PAN-OS 11.1 commands; added Azure ExpressRoute procedures;       | T. Reyes
+        |             | added T+240 escalation tier                                              |
+
+================================================================================
+END OF DOCUMENT — IT-RB-NET-001 v3.4
+================================================================================
