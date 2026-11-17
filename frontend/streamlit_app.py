@@ -1,6 +1,6 @@
 """Streamlit UI for the Enterprise Knowledge Assistant.
 
-    streamlit run frontend/app.py
+    streamlit run frontend/streamlit_app.py
 
 Holds no secrets and no business logic: identity, policy, retrieval and LLM calls
 all happen in the FastAPI backend.

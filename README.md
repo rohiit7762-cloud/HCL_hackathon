@@ -56,7 +56,7 @@ Streamlit ──► FastAPI ──► identity (server-side) ──► LangGraph
 5. **Start the backend and the UI** in two terminals:
    ```
    python scripts/run_backend.py --port 8765
-   streamlit run frontend/app.py
+   streamlit run frontend/streamlit_app.py
    ```
    The UI expects the backend at `http://localhost:8765`. To use another port, set the `BACKEND_URL` environment variable before starting Streamlit.
 
