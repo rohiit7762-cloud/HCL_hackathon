@@ -1,0 +1,12 @@
+{
+  "tenant_id": "lumen",
+  "title": "Employee directory and HR records",
+  "classification": "restricted",
+  "allowed_groups": [
+    "hr-team"
+  ],
+  "allowed_roles": [],
+  "contains_personal_data": true,
+  "contains_confidential_business": false,
+  "dataset_name": "employees"
+}

@@ -28,19 +28,19 @@ class Settings(BaseSettings):
     demo_jwt_secret: SecretStr = SecretStr("")
     demo_token_ttl_minutes: int = Field(120, ge=1, le=24 * 60)
     demo_tenant_id: str = "lumen"
-    query_timeout_seconds: float = Field(60.0, gt=0)
+    query_timeout_seconds: float = Field(90.0, gt=0)
     log_level: str = "INFO"
     max_request_bytes: int = 6 * 1024 * 1024
 
     # --- Groq ---
     groq_api_key: SecretStr = SecretStr("")
-    groq_model_planner: str = "llama-3.3-70b-versatile"
-    groq_model_refiner: str = "llama-3.1-8b-instant"
-    groq_model_evidence_judge: str = "llama-3.3-70b-versatile"
-    groq_model_answer: str = "llama-3.3-70b-versatile"
-    groq_model_grounding_check: str = "llama-3.1-8b-instant"
-    groq_model_sql_spec: str = "llama-3.3-70b-versatile"
-    groq_model_vision: str = "meta-llama/llama-4-scout-17b-16e-instruct"
+    groq_model_planner: str = "openai/gpt-oss-120b"
+    groq_model_refiner: str = "openai/gpt-oss-20b"
+    groq_model_evidence_judge: str = "openai/gpt-oss-20b"
+    groq_model_answer: str = "openai/gpt-oss-120b"
+    groq_model_grounding_check: str = "openai/gpt-oss-20b"
+    groq_model_sql_spec: str = "openai/gpt-oss-20b"
+    groq_model_vision: str = "qwen/qwen3.8-27b"
     groq_vision_enabled: bool = True
     groq_timeout_seconds: float = Field(30.0, gt=0)
     groq_max_concurrency: int = Field(4, ge=1)

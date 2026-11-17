@@ -1,0 +1,11 @@
+Lumen Dynamics - Incident Severity and Escalation Policy
+
+P1: complete outage or data loss for a tier-1 service. Page on-call immediately, open an incident channel, update the status page within 15 minutes.
+
+P2: major degradation of a tier-1 service or outage of a tier-2 service. Page on-call, update stakeholders every 30 minutes.
+
+P3: minor degradation with a workaround. Handle during business hours.
+
+P4: cosmetic or internal-only issue. Track in the backlog.
+
+Every P1 requires a blameless postmortem within five business days.

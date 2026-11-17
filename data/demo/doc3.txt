@@ -1,0 +1,426 @@
+================================================================================
+CORVANTA TECHNOLOGIES, INC.
+KNOWLEDGE MANAGEMENT OFFICE — SUBJECT MATTER EXPERT DIRECTORY
+================================================================================
+Document ID:      KB-DIR-006
+Title:            Subject Matter Expert (SME) Directory — Cloud Architecture,
+                  Network Security, Human Resources, Legal
+Version:          2.7
+Last Updated:     November 2, 2026
+Owner:            Knowledge Management Office (KMO), with People Operations
+Classification:   C1 – Internal. Contains business contact data only. No home
+                  addresses, personal phone numbers, or other personal PII is
+                  stored here (SEC-04 Rule PII-01).
+Data Sources:     Workday (organizational data); Corvanta Learn (certifications);
+                  self-attested skills validated annually by the SME's manager.
+Update Cadence:   Quarterly. SMEs must update their profile within 10 business
+                  days of any role change.
+================================================================================
+
+1. PURPOSE AND USAGE
+
+1.1 This Directory identifies designated Subject Matter Experts for advisory consultations, design reviews, policy interpretation, and incident escalation. It does NOT replace ServiceNow. Operational requests (access, firewall changes, HR transactions) must be submitted through the appropriate ServiceNow catalog item.
+
+1.2 Consultation channels: the "Ask an Expert" ServiceNow form (preferred), Slack direct message during posted office hours, or PagerDuty where the SME holds an escalation rotation.
+
+1.3 Consultation Response SLA: Standard: 2 business days. Urgent (SEV1/SEV2 incident, regulatory deadline, or active legal matter): same business day, or via PagerDuty where applicable.
+
+1.4 Proficiency Scale:
+    L5 – Authority:     Recognized internal authority; sets standards; final technical escalation point.
+    L4 – Expert:        Deep expertise; leads complex designs and reviews independently.
+    L3 – Advanced:      Strong working knowledge; handles most scenarios without assistance.
+    L2 – Practitioner:  Working knowledge; handles routine scenarios.
+    L1 – Foundational:  Awareness-level knowledge.
+
+--------------------------------------------------------------------------------
+2. SME PROFILES
+--------------------------------------------------------------------------------
+
+[SME-001]
+Name:               Elena Vasquez-Hart
+Employee ID:        CVT-100482
+Title:              Principal Cloud Architect
+Department:         Cloud Architecture (Enterprise Architecture & Platform Engineering)
+Reports To:         Kwame Asante-Boateng, VP, Enterprise Architecture
+Location:           Austin, TX (AUS-HQ) — US Central Time (UTC-6 / UTC-5 DST)
+Work Model:         Hybrid (in office Tuesday–Thursday)
+Email:              elena.vasquez-hart@corvanta.com
+Slack:              @evasquezhart
+Phone:              +1 (512) 555-0147, ext. 2147
+Tenure:             7 years (joined March 2019)
+Data Access Tier:   C3 – Restricted (infrastructure architecture)
+
+Profile Summary:
+Lead architect for Corvanta's AWS multi-account landing zone (160+ accounts) and hybrid connectivity between on-premises data centers and AWS. Author of the Cloud Reference Architecture (CRA-2026). Chairs the Cloud Architecture Review Board (CARB), which meets Wednesdays at 14:00 CT. Final technical approver for new AWS production environments.
+
+Core Skills & Proficiency:
+- AWS Architecture (Organizations, Control Tower, landing zones, SCPs) ........ L5
+- AWS Networking (Transit Gateway, Direct Connect, PrivateLink, Route 53) ...... L5
+- Infrastructure as Code (Terraform, Terragrunt, AWS CDK) ..................... L4
+- Kubernetes / Amazon EKS (cluster design, networking, multi-tenancy) ......... L4
+- Cloud Migration (7Rs strategy, AWS Application Migration Service) ........... L4
+- FinOps & Cloud Cost Optimization (Savings Plans, rightsizing, CUR analysis) .. L4
+- Cloud Security Architecture (IAM permission boundaries, GuardDuty) .......... L3
+
+Certifications:
+AWS Certified Solutions Architect – Professional; AWS Certified Advanced Networking – Specialty; HashiCorp Certified Terraform Associate (003); Certified Kubernetes Administrator (CKA); FinOps Certified Practitioner.
+
+Key Systems Owned / Supported:
+AWS Organization "corvanta-prod-org"; Transit Gateway tgw-0c4e1a9b27f3d5e81; Direct Connect circuits dxcon-ffq7ab12 (DFW) and dxcon-gg2c9k47 (IAD); Terraform module registry (tf-registry.corp.corvanta.net).
+
+Ask Elena About:
+New AWS environment design; Direct Connect / Transit Gateway routing issues; landing zone guardrails; EKS architecture; cost anomalies exceeding $10,000/month; CARB submissions; on-premises-to-AWS migration planning.
+
+Do NOT Route to Elena:
+Azure-specific questions (-> Rohan Mehta); AWS IAM access requests (-> ServiceNow IAM queue).
+
+Escalation Roles:
+Named SME in IT-RB-NET-001 Section 9.3 (AWS connectivity). PagerDuty "Cloud-Arch-Escalation" — secondary, business hours.
+
+Office Hours:       Tuesday & Thursday, 15:00–16:30 CT
+Languages:          English, Spanish
+Backup SME:         Rohan Mehta (SME-002)
+Current Projects:   "Project Northstar" — DFW-DC1 to AWS migration, Wave 3 (target Q2 FY2027); multi-region active-active design for api.corvanta.com.
+
+--------------------------------------------------------------------------------
+
+[SME-002]
+Name:               Rohan Mehta
+Employee ID:        CVT-103917
+Title:              Senior Cloud Architect — Azure & Hybrid Infrastructure
+Department:         Cloud Architecture (Enterprise Architecture & Platform Engineering)
+Reports To:         Kwame Asante-Boateng, VP, Enterprise Architecture
+Location:           Bengaluru, India (BLR-OFC) — India Standard Time (UTC+5:30)
+Work Model:         Hybrid (in office Monday, Wednesday, Thursday)
+Email:              rohan.mehta@corvanta.com
+Slack:              @rmehta
+Phone:              Zoom Phone ext. 6311
+Tenure:             5 years (joined July 2021)
+Data Access Tier:   C3 – Restricted (infrastructure architecture)
+
+Profile Summary:
+Leads Corvanta's Microsoft Azure platform, including the Azure Landing Zone, ExpressRoute connectivity, and Microsoft 365 / Entra ID tenant governance. Primary architect for hybrid disaster recovery between IAD-DC2 and Azure East US 2. Provides APAC follow-the-sun coverage for cloud escalations.
+
+Core Skills & Proficiency:
+- Microsoft Azure Architecture (Landing Zones, Management Groups, Azure Policy) . L5
+- Azure Networking (ExpressRoute, Virtual WAN, Azure Firewall, Private Endpoints) L4
+- Microsoft Entra ID (Conditional Access, hybrid identity, PIM) ............... L4
+- Disaster Recovery & Business Continuity (Azure Site Recovery, RTO/RPO design) L4
+- Infrastructure as Code (Terraform, Bicep) .................................. L4
+- Kubernetes / Azure Kubernetes Service (AKS) ................................. L3
+- Google Cloud Platform (GKE, Shared VPC, Org Policy) ......................... L3
+- Data Platform Architecture (Azure Databricks, Synapse) ...................... L2
+
+Certifications:
+Microsoft Certified: Azure Solutions Architect Expert (AZ-305); Microsoft Certified: Azure Network Engineer Associate (AZ-700); Google Cloud Professional Cloud Architect; TOGAF Standard, 10th Edition — Foundation.
+
+Key Systems Owned / Supported:
+Azure tenant corvanta.onmicrosoft.com; ExpressRoute circuit er-corvanta-eus2-01; Recovery Services vault rsv-dr-eus2-prod; Azure Policy initiative "corvanta-baseline-v3."
+
+Ask Rohan About:
+Azure architecture and cost; ExpressRoute issues; hybrid DR design and RTO/RPO validation; Microsoft 365 tenant governance; cross-cloud design patterns; GCP evaluation.
+
+Do NOT Route to Rohan:
+AWS-specific questions (-> Elena Vasquez-Hart); Entra ID access or group membership requests (-> ServiceNow IAM queue).
+
+Escalation Roles:
+Named SME in IT-RB-NET-001 Section 9.3 (Azure connectivity, hybrid DR). Primary for cloud escalations during APAC hours (09:00–18:00 IST).
+
+Office Hours:       Monday & Wednesday, 16:00–17:30 IST (overlaps Dublin morning)
+Languages:          English, Hindi
+Backup SME:         Elena Vasquez-Hart (SME-001)
+Current Projects:   Azure Virtual WAN migration for EMEA/APAC branches (target Q1 FY2027); DR test automation for Tier 1 services.
+
+--------------------------------------------------------------------------------
+
+[SME-003]
+Name:               Marcus Oyelaran
+Employee ID:        CVT-098214
+Title:              Principal Network Security Engineer
+Department:         Network Security (Office of the CISO)
+Reports To:         Hannah Kowalczyk, Director, Security Engineering & Operations
+Location:           Charlotte, NC (CLT-OFC) — US Eastern Time (UTC-5 / UTC-4 DST)
+Work Model:         Hybrid (in office Tuesday–Thursday)
+Email:              marcus.oyelaran@corvanta.com
+Slack:              @moyelaran
+Phone:              +1 (704) 555-0182, ext. 4182
+Tenure:             9 years (joined January 2017)
+Data Access Tier:   C3 – Restricted (privileged access via CyberArk; security tooling)
+
+Profile Summary:
+Technical authority for perimeter security and internal network segmentation. Owner of the Firewall Rule Governance Standard (NETSEC-STD-007). Leads DDoS response and is authorized to activate the upstream DDoS scrubbing service. Lead architect for the Zero Trust Network Access (Zscaler ZPA) program that replaced the legacy VPN in 2025.
+
+Core Skills & Proficiency:
+- Palo Alto NGFW (PAN-OS, Panorama, App-ID, HA design) ........................ L5
+- Firewall Rule Governance & Security Policy Review ........................... L5
+- DDoS Detection & Mitigation (BGP diversion, scrubbing services) ............. L4
+- Zero Trust Network Access (Zscaler ZPA / ZIA) ............................... L4
+- Network Segmentation & Micro-segmentation ................................... L4
+- BGP & Routing Security (RPKI, prefix filtering) ............................. L4
+- PCI DSS Network Segmentation & Scoping ...................................... L4
+- IDS/IPS & Threat Prevention ................................................. L3
+
+Certifications:
+CISSP; Palo Alto Networks Certified Network Security Engineer (PCNSE); Cisco CCNP Security; Zscaler Certified Cloud Professional – Private Access (ZCCP-PA).
+
+Key Systems Owned / Supported:
+Firewall HA pairs dfw1-fw-pa01/02 and iad2-fw-pa01/02; Panorama (pano-01.corp.corvanta.net); Zscaler tenant; DDoS scrubbing contract DDOS-2025-014.
+
+Ask Marcus About:
+Firewall rules requiring architectural review (any-to-any, ranges larger than /24, inbound from the Internet); DDoS events; PCI segmentation scope; ZPA application segment design; network security design reviews; firewall behavior during outages (IT-RB-NET-001 Section 7.4).
+
+Do NOT Route to Marcus:
+Routine firewall change requests (-> ServiceNow catalog item FCR-01, handled by NetSec Operations); endpoint security / EDR questions (-> Endpoint Security team).
+
+Escalation Roles:
+Named SME in IT-RB-NET-001 Sections 7.4, 9.3, and 9.4. PagerDuty "NetSec-Escalation" — primary, 24x7, one week in every three.
+
+Office Hours:       Monday & Friday, 11:00–12:00 ET
+Languages:          English, Yoruba
+Backup SME:         Siobhán Gallagher (SME-004)
+Current Projects:   Firewall rule base cleanup (target: remove 30% of unused rules by Q1 FY2027); RPKI Route Origin Validation on all edge routers.
+
+--------------------------------------------------------------------------------
+
+[SME-004]
+Name:               Siobhán Gallagher
+Employee ID:        CVT-105630
+Title:              Lead, Security Operations & Incident Response (SOC/IR)
+Department:         Network Security (Office of the CISO)
+Reports To:         Hannah Kowalczyk, Director, Security Engineering & Operations
+Location:           Dublin, Ireland (DUB-OFC) — Irish Time (UTC+0 / UTC+1 summer)
+Work Model:         Hybrid (in office Monday–Wednesday)
+Email:              siobhan.gallagher@corvanta.com
+Slack:              @sgallagher
+Phone:              Zoom Phone ext. 5520
+Tenure:             4 years (joined September 2022)
+Data Access Tier:   C3 – Restricted (SIEM, forensic evidence repository)
+
+Profile Summary:
+Leads Corvanta's 24x7 follow-the-sun Security Operations Center (Dublin, Charlotte, Bengaluru). Owner of the Incident Response Plan (IR-PLAN-001). Technical lead for data breach assessment and containment, and primary technical liaison to Legal for GDPR breach evaluations in EMEA. Owns technical triage of SEC-04 violations detected by DLP.
+
+Core Skills & Proficiency:
+- Incident Response Leadership (NIST SP 800-61) ............................... L5
+- SIEM Engineering & Detection Content (Splunk Enterprise Security, SPL) ...... L4
+- Digital Forensics & Evidence Handling (chain of custody) .................... L4
+- Threat Hunting & Threat Intelligence (MITRE ATT&CK) ......................... L4
+- GDPR Breach Assessment (technical scope and impact) ......................... L4
+- Data Loss Prevention (Microsoft Purview DLP) ................................ L3
+- Privileged Access Management (CyberArk) ..................................... L3
+- Cloud Security Monitoring (AWS GuardDuty, Microsoft Defender for Cloud) ..... L3
+
+Certifications:
+GIAC Certified Incident Handler (GCIH); GIAC Certified Forensic Analyst (GCFA); Offensive Security Certified Professional (OSCP); Splunk Enterprise Security Certified Admin.
+
+Key Systems Owned / Supported:
+Splunk ES (splunk-es.corp.corvanta.net); PagerDuty "SOC-IR-Primary"; forensic evidence share \\dfw1-ir-evidence01; Microsoft Purview DLP policies.
+
+Ask Siobhán About:
+Suspected security incidents; phishing escalations; DLP alerts and SEC-04 violation triage (technical); log availability and retention for investigations; forensic evidence handling; security aspects of network outages.
+
+Do NOT Route to Siobhán:
+Legal interpretation of privacy obligations or breach notification decisions (-> Jonathan Albrecht); access requests (-> ServiceNow).
+
+Escalation Roles:
+SOC Lead under IT-RB-NET-001 Section 9.4; technical intake for SEC-04 Section 13 incident reports.
+
+Office Hours:       Tuesday & Thursday, 14:00–15:00 Irish Time
+Languages:          English, Irish (Gaeilge)
+Backup SME:         Marcus Oyelaran (SME-003); SOC on-call lead (PagerDuty SOC-IR-Primary)
+Current Projects:   SOAR automation for phishing triage; DLP rule tuning (target: 40% reduction in false positives by Q2 FY2027).
+
+--------------------------------------------------------------------------------
+
+[SME-005]
+Name:               Priya Raman
+Employee ID:        CVT-101266
+Title:              Senior HR Business Partner — Onboarding, Leave & Employee Policy
+Department:         Human Resources (People Operations)
+Reports To:         Danielle R. Whitaker, Chief People Officer
+Location:           Charlotte, NC (CLT-OFC) — US Eastern Time (UTC-5 / UTC-4 DST)
+Work Model:         Hybrid (in office Monday, Tuesday, Thursday)
+Email:              priya.raman@corvanta.com
+Slack:              @praman
+Phone:              +1 (704) 555-0165, ext. 4405
+Tenure:             6 years (joined February 2020)
+Data Access Tier:   C3 – Restricted (Workday "HR Partner" security group — employee records)
+
+Profile Summary:
+Policy owner for HR-POL-101 (New Employee Onboarding) and HR-POL-115 (Leave of Absence). People Operations lead for the Workday 30-60-90 Onboarding Journey. Advises managers on probationary reviews, PTO and leave eligibility, FMLA/ADA accommodations, and onboarding exceptions. Approves HR-side exceptions under HR-POL-101 Section 11.
+
+Core Skills & Proficiency:
+- Onboarding Program Design & HR-POL-101 Interpretation ....................... L5
+- Leave Administration (PTO, FMLA, parental leave, ADA accommodations) ........ L5
+- US Employment Compliance (FLSA, Form I-9 / E-Verify) ........................ L4
+- Workday HCM (Onboarding Journeys, Absence, Business Processes) .............. L4
+- Employee Relations & Workplace Investigations ............................... L4
+- Performance Management & Probationary Reviews ............................... L4
+- Global Mobility & Immigration Coordination (H-1B, L-1, Irish Critical Skills
+  Employment Permit) .......................................................... L3
+- Compensation & Total Rewards ................................................ L2
+
+Certifications:
+SHRM Senior Certified Professional (SHRM-SCP); Senior Professional in Human Resources (SPHR); Certified Leave Management Specialist (CLMS).
+
+Key Systems Owned / Supported:
+Workday HCM (Onboarding and Absence modules); ServiceNow HR Service Delivery; Corvanta Learn (onboarding curricula assignment rules).
+
+Ask Priya About:
+PTO accrual, carryover, and new-hire PTO rules; onboarding policy exceptions; probation extensions; parental leave and FMLA eligibility; training deadline extensions during leave; leave of absence; on-call fatigue and staffing rules for extended incidents (HR-POL-140).
+
+Do NOT Route to Priya:
+Payroll errors (-> payroll@corvanta.com); benefits claims (-> benefits administrator); immigration legal opinions (-> Legal, for referral to external immigration counsel).
+
+Escalation Roles:
+HRBP exception approver under HR-POL-101 Section 11; Employee Relations case intake; HR contact for extended SEV1 incidents (IT-RB-NET-001 Section 9.2).
+
+Office Hours:       Monday–Thursday, 13:00–14:00 ET. Confidential matters must be raised via a ServiceNow Confidential HR case, NOT Slack.
+Languages:          English, Tamil
+Backup SME:         People Operations Service Center (hr-help@corvanta.com, ext. 4357)
+Current Projects:   Workday Onboarding Journey 2.0 (launch January 2027); global parental leave harmonization across US, Ireland, and India.
+
+--------------------------------------------------------------------------------
+
+[SME-006]
+Name:               Jonathan Albrecht
+Employee ID:        CVT-099741
+Title:              Senior Corporate Counsel, Privacy & Data Protection;
+                    Deputy Data Protection Officer
+Department:         Legal (Office of the General Counsel)
+Reports To:         Rebecca Stanhope, General Counsel
+Location:           Austin, TX (AUS-HQ) — US Central Time (UTC-6 / UTC-5 DST)
+Work Model:         Hybrid (in office Tuesday–Thursday)
+Email:              jonathan.albrecht@corvanta.com
+Slack:              @jalbrecht
+Phone:              +1 (512) 555-0190, ext. 2290
+Tenure:             8 years (joined October 2018)
+Data Access Tier:   C3 – Restricted (legal matters; privileged and confidential)
+
+Profile Summary:
+Lead privacy counsel and co-owner of Policy SEC-04 alongside the CISO. Advises on GDPR, UK GDPR, CCPA/CPRA, and India's Digital Personal Data Protection (DPDP) Act 2023; data processing agreements (DPAs); cross-border data transfers; and breach notification determinations. Legal reviewer for AI tool approvals in the Approved AI Tools Register (AI-REG-01).
+
+Core Skills & Proficiency:
+- Data Privacy Law (GDPR, UK GDPR, CCPA/CPRA, DPDP Act 2023) .................. L5
+- Data Breach Notification & Regulatory Response .............................. L5
+- Data Processing Agreements & Vendor Contracts (SaaS, cloud, AI) ............. L4
+- Cross-Border Data Transfers (SCCs, EU-US Data Privacy Framework, TIAs) ...... L4
+- Records Retention & Legal Hold .............................................. L4
+- AI Governance & EU AI Act Compliance ........................................ L3
+- Employment Privacy (employee monitoring, background checks) ................. L3
+- Export Controls (EAR) ....................................................... L2
+
+Bar Admissions & Certifications:
+Licensed attorney — State Bar of Texas; New York State Bar. IAPP CIPP/E, CIPP/US, CIPM, and Fellow of Information Privacy (FIP).
+
+Key Systems Owned / Supported:
+Privacy program management platform (Record of Processing Activities, DPIA workflows); contract lifecycle management system (DPA templates); legal hold platform.
+
+Ask Jonathan About:
+Whether a proposed use of personal data is lawful; DPAs and vendor privacy terms; complex or escalated data subject requests; legal holds; breach notification obligations; Data Protection Impact Assessments (DPIAs) for new projects; legal interpretation of SEC-04 and SEC-04 exception requests; use of personal data in AI tools.
+
+Do NOT Route to Jonathan:
+Routine NDAs (-> self-service NDA via legal-contracts@corvanta.com); employment disputes (-> Employment Counsel); patents and IP (-> IP Counsel).
+
+Escalation Roles:
+Breach notification determination under SEC-04 Section 13; legal contact for data exposure during network incidents (IT-RB-NET-001 Section 9.2). PagerDuty "Legal-Privacy-OnCall" for urgent breach matters (24x7 rotation).
+
+Office Hours:       Wednesday, 10:00–11:30 CT
+Privilege Notice:   Communications seeking legal advice should be marked "Privileged & Confidential — Attorney-Client Communication."
+Languages:          English, German
+Backup SME:         Office of the General Counsel (legal@corvanta.com); DPO (dpo@corvanta.com)
+Current Projects:   India DPDP Act compliance program; DPIA for "Corvanta Assist" (enterprise AI knowledge assistant); annual DPA refresh for Tier 1 vendors.
+
+--------------------------------------------------------------------------------
+3. SKILLS-TO-EXPERT INDEX
+--------------------------------------------------------------------------------
+
+Skill / Topic Keywords                                       | Primary SME (Level)        | Backup SME (Level)
+-------------------------------------------------------------|----------------------------|---------------------------
+AWS, landing zone, Control Tower, SCP, Organizations         | Elena Vasquez-Hart (L5)    | Rohan Mehta (L3)
+AWS Direct Connect, Transit Gateway, PrivateLink, Route 53   | Elena Vasquez-Hart (L5)    | Rohan Mehta (L3)
+Terraform, Infrastructure as Code, Terragrunt, CDK           | Elena Vasquez-Hart (L4)    | Rohan Mehta (L4)
+Kubernetes, EKS                                              | Elena Vasquez-Hart (L4)    | Rohan Mehta (L3)
+FinOps, cloud cost, Savings Plans                            | Elena Vasquez-Hart (L4)    | Rohan Mehta (L3)
+Cloud migration, data center exit                            | Elena Vasquez-Hart (L4)    | Rohan Mehta (L3)
+Azure, Azure Policy, Landing Zone, Bicep                     | Rohan Mehta (L5)           | Elena Vasquez-Hart (L2)
+ExpressRoute, Virtual WAN, Azure Firewall                    | Rohan Mehta (L4)           | Elena Vasquez-Hart (L2)
+Entra ID, Conditional Access, Microsoft 365 tenant           | Rohan Mehta (L4)           | —
+Disaster recovery, RTO, RPO, Azure Site Recovery             | Rohan Mehta (L4)           | Elena Vasquez-Hart (L3)
+Google Cloud, GCP, GKE                                       | Rohan Mehta (L3)           | —
+Firewall, Palo Alto, Panorama, rule review                   | Marcus Oyelaran (L5)       | Siobhán Gallagher (L2)
+DDoS, scrubbing, BGP diversion                               | Marcus Oyelaran (L4)       | Siobhán Gallagher (L3)
+Zero Trust, ZTNA, Zscaler ZPA/ZIA, VPN                       | Marcus Oyelaran (L4)       | Siobhán Gallagher (L2)
+Network segmentation, PCI scope                              | Marcus Oyelaran (L4)       | Siobhán Gallagher (L2)
+BGP security, RPKI                                           | Marcus Oyelaran (L4)       | —
+Incident response, security breach (technical), IR-PLAN-001  | Siobhán Gallagher (L5)     | Marcus Oyelaran (L3)
+SIEM, Splunk, detection engineering, threat hunting          | Siobhán Gallagher (L4)     | Marcus Oyelaran (L2)
+Forensics, evidence, chain of custody                        | Siobhán Gallagher (L4)     | —
+DLP, Purview, SEC-04 violation triage (technical)            | Siobhán Gallagher (L3)     | Marcus Oyelaran (L2)
+CyberArk, PAM, privileged access                             | Siobhán Gallagher (L3)     | Marcus Oyelaran (L3)
+Onboarding, 30-60-90 plan, HR-POL-101                        | Priya Raman (L5)           | POSC
+PTO, vacation, sick leave, holidays, carryover               | Priya Raman (L5)           | POSC
+FMLA, parental leave, ADA accommodation, leave of absence    | Priya Raman (L5)           | POSC
+Probation, probationary review, performance                  | Priya Raman (L4)           | —
+Workday HCM                                                  | Priya Raman (L4)           | POSC
+Visa, immigration, H-1B, work permit (coordination only)     | Priya Raman (L3)           | Legal -> external counsel
+Employee relations, workplace investigation                  | Priya Raman (L4)           | —
+GDPR, CCPA, CPRA, DPDP Act, privacy law                      | Jonathan Albrecht (L5)     | DPO
+Breach notification (legal), regulator response              | Jonathan Albrecht (L5)     | Office of the GC
+DPA, vendor privacy terms, cross-border transfer, SCCs       | Jonathan Albrecht (L4)     | Office of the GC
+AI governance, AI tools and PII, EU AI Act                   | Jonathan Albrecht (L3)     | Siobhán Gallagher (L2)
+Legal hold, records retention                                | Jonathan Albrecht (L4)     | Office of the GC
+SEC-04 policy interpretation and exceptions                  | Jonathan Albrecht (legal)  | Siobhán Gallagher (technical)
+
+--------------------------------------------------------------------------------
+4. MULTI-DOMAIN ROUTING RULES
+--------------------------------------------------------------------------------
+
+R1. Suspected data breach involving personal data: engage Siobhán Gallagher (technical containment) AND Jonathan Albrecht (legal notification analysis) CONCURRENTLY, never sequentially. The GDPR 72-hour notification clock starts at awareness.
+R2. Network outage with suspected attack: engage Marcus Oyelaran AND Siobhán Gallagher per IT-RB-NET-001 Section 9.4.
+R3. New cloud project processing personal data: architecture review by Elena Vasquez-Hart (AWS) or Rohan Mehta (Azure) AND a DPIA by Jonathan Albrecht before CARB approval.
+R4. New hire requesting C3 (Restricted) access before completing SEC-102: the request is DENIED by policy (HR-POL-101 Section 7.2; SEC-04 Rule ACC-03(b)). Priya Raman can advise on accelerating SEC-102 completion; no SME can waive the gate.
+R5. Employee monitoring or investigations involving personal data: engage Priya Raman AND Jonathan Albrecht.
+R6. SME unavailable (out of office, or status "Away" for more than 1 business day): route to the listed Backup SME. If the Backup is also unavailable, route to the department distribution list (Section 6).
+R7. Confidential HR case details and privileged legal advice must never be shared in public Slack channels or non-private tickets.
+
+--------------------------------------------------------------------------------
+5. AVAILABILITY & PLANNED ABSENCES (as of November 2, 2026)
+--------------------------------------------------------------------------------
+
+SME                  | Status     | Notes
+---------------------|------------|---------------------------------------------------------------
+Elena Vasquez-Hart   | Available  | PTO December 21, 2026 – January 1, 2027. Backup: Rohan Mehta.
+Rohan Mehta          | Available  | On site at DUB-OFC November 30 – December 4, 2026 (Irish Time hours).
+Marcus Oyelaran      | Available  | NetSec-Escalation primary on-call week of November 16, 2026
+                     |            | (and every third week thereafter).
+Siobhán Gallagher    | Limited    | Reduced availability November 23–27, 2026 (forensics training).
+                     |            | Urgent matters: SOC-IR-Primary on-call.
+Priya Raman          | Available  | Supporting Open Enrollment through November 20, 2026; non-urgent
+                     |            | response SLA extended to 3 business days during this period.
+Jonathan Albrecht    | Available  | Out of office December 24, 2026 – January 4, 2027.
+                     |            | Legal-Privacy-OnCall covers urgent breach matters.
+
+--------------------------------------------------------------------------------
+6. DEPARTMENT DISTRIBUTION LISTS
+--------------------------------------------------------------------------------
+
+Cloud Architecture:   cloud-architecture@corvanta.com   | Slack #ask-cloud-arch
+Network Security:     netsec@corvanta.com               | Slack #ask-netsec
+Security Operations:  security@corvanta.com (24x7)      | Slack #sec-report
+Human Resources:      hr-help@corvanta.com (ext. 4357)  | ServiceNow HR Portal
+Legal / Privacy:      legal@corvanta.com; privacy@corvanta.com; dpo@corvanta.com
+
+--------------------------------------------------------------------------------
+7. REVISION HISTORY
+--------------------------------------------------------------------------------
+
+Version | Date        | Summary of Changes                                              | Author
+--------|-------------|-----------------------------------------------------------------|----------
+2.5     | 2026-02-10  | Added proficiency scale (L1–L5); added Skills-to-Expert Index   | KMO
+2.6     | 2026-06-22  | Added multi-domain routing rules R1–R7                          | KMO
+2.7     | 2026-11-02  | Quarterly refresh; updated availability; added AI governance    | KMO
+        |             | skill for J. Albrecht                                           |
+
+================================================================================
+END OF DOCUMENT — KB-DIR-006 v2.7
+================================================================================

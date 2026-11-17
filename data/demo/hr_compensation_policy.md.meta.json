@@ -1,0 +1,10 @@
+{
+  "tenant_id": "lumen",
+  "title": "Compensation Policy Summary",
+  "classification": "internal",
+  "allowed_groups": [],
+  "allowed_roles": [],
+  "contains_personal_data": false,
+  "contains_confidential_business": false,
+  "dataset_name": null
+}

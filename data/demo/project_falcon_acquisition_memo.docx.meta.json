@@ -1,0 +1,13 @@
+{
+  "tenant_id": "lumen",
+  "title": "Project Falcon Acquisition Memo",
+  "classification": "confidential",
+  "allowed_groups": [
+    "finance",
+    "leadership"
+  ],
+  "allowed_roles": [],
+  "contains_personal_data": false,
+  "contains_confidential_business": true,
+  "dataset_name": null
+}

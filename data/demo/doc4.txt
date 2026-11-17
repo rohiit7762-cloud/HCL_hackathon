@@ -1,0 +1,290 @@
+================================================================================
+CORVANTA TECHNOLOGIES, INC.
+PEOPLE OPERATIONS — CORPORATE POLICY
+================================================================================
+Document ID:      HR-POL-101
+Title:            New Employee Onboarding Policy
+Version:          4.2
+Effective Date:   January 1, 2026
+Last Revised:     September 15, 2026
+Next Review:      September 15, 2027
+Policy Owner:     People Operations (Human Resources)
+Policy Contact:   Priya Raman, Senior HR Business Partner — Onboarding, Leave & Employee Policy
+Approved By:      Danielle R. Whitaker, Chief People Officer
+Classification:   C1 – Internal (per Policy SEC-04, Section 5)
+Applicability:    Corvanta Technologies, Inc.; Corvanta Technologies Ireland Ltd.;
+                  Corvanta Technologies India Pvt. Ltd.
+================================================================================
+
+1. PURPOSE
+
+1.1 This Policy establishes the mandatory standards, timelines, and accountabilities governing the onboarding of all new employees of Corvanta Technologies, Inc. ("Corvanta" or "the Company"). It ensures every new hire is legally compliant, securely provisioned, and productive within the first ninety (90) calendar days of employment.
+
+1.2 Objectives:
+    (a) Satisfy employment eligibility, tax, and data privacy obligations in every jurisdiction in which Corvanta operates.
+    (b) Ensure no new hire accesses Confidential (C2) or Restricted (C3) information prior to completing mandatory security training.
+    (c) Reduce median time-to-productivity to 60 calendar days (FY2025 baseline: 74 days).
+    (d) Deliver a consistent, measurable onboarding experience (target 90-day new-hire eNPS of +40 or higher).
+
+2. SCOPE
+
+2.1 This Policy applies to: (a) full-time regular employees; (b) part-time regular employees scheduled for 20 or more hours per week; (c) fixed-term employees with an initial contract of six (6) months or longer; (d) rehires with a break in service exceeding 90 calendar days; and (e) interns engaged for 10 weeks or longer (Sections 5, 7, and 10 only).
+
+2.2 Contractors, consultants, and contingent workers are governed by VMP-POL-210 (Contingent Workforce Policy). HOWEVER, Section 7 (Mandatory Security & Compliance Training) applies to every individual issued a Corvanta network account, without exception.
+
+2.3 Internal transfers are subject only to Section 7.3 (Role-Based Training) and the access validation requirement in Checklist Item 2.03.
+
+3. DEFINITIONS
+
+- Start Date: The employee's first day of active employment, counted as "Day 1" and "Business Day 1 (BD 1)."
+- Day n: The nth calendar day of employment, counting the Start Date as Day 1.
+- BD n: The nth business day of employment (Monday–Friday, excluding Company holidays observed at the employee's work location), counting the Start Date as BD 1.
+- Hiring Manager: The people leader to whom the new hire directly reports.
+- Onboarding Buddy: A tenured peer (minimum 12 months of service and a "Meets Expectations" or higher rating in the most recent review cycle) assigned by the Hiring Manager.
+- HRBP: HR Business Partner assigned to the employee's business unit.
+- POSC: People Operations Service Center — hr-help@corvanta.com, ext. 4357 (HELP), or the ServiceNow HR Service Portal.
+- Workday: Corvanta's Human Resources Information System (HRIS) and system of record for employee data.
+- Corvanta Learn: The Company's enterprise Learning Management System (LMS).
+- RBAP: Role-Based Access Profile — the standard set of system entitlements assigned to a job code.
+- Probationary Period: The first 90 calendar days of employment (see Section 9).
+
+4. PRE-BOARDING (OFFER ACCEPTANCE THROUGH DAY -1)
+
+4.1 Background Screening. All offers are contingent upon satisfactory completion of a background check through the Company's approved screening vendor. Screening must be completed no later than three (3) business days before the Start Date. No Start Date may be confirmed in Workday until screening status is "Cleared."
+
+4.2 Start Date Cohorts. Start Dates are scheduled on Mondays only (Tuesday when Monday is a Company holidays). Exceptions require HRBP approval.
+
+4.3 Provisioning Request. The Hiring Manager MUST submit the "New Hire Provisioning Request" (ServiceNow catalog item NHPR-01) no later than ten (10) business days before the Start Date, specifying the RBAP, hardware profile, software, distribution lists, and building access. Requests submitted late are not guaranteed for Day 1 fulfillment.
+
+4.4 Identity Data Collection. New hires submit personal data, emergency contacts, tax forms (US: Form W-4 and state equivalents; Ireland: PPSN registration with Revenue; India: PAN and UAN for EPF), and direct deposit details ONLY through the Workday Pre-Hire Portal. In accordance with Policy SEC-04 (Rules PII-03 and PII-12), recruiters, coordinators, and managers must NEVER request government identification numbers, bank details, or images of identity documents by email, chat, or text message. Any such request must be reported to the Security Operations Center (security@corvanta.com).
+
+4.5 Account Creation. The IT Service Desk creates Entra ID and Okta accounts in a disabled state on Day -3. Accounts are activated at 07:00 local time on Day 1 upon People Operations' confirmation of identity verification.
+
+4.6 Buddy Assignment. The Hiring Manager assigns an Onboarding Buddy in Workday no later than Day -5.
+
+5. DAY 1 ORIENTATION
+
+5.1 New Hire Orientation (NHO) is mandatory and held every Monday, 09:00–12:30 local time. Austin HQ (AUS-HQ) sessions are in person; remote employees attend via Zoom; Dublin (DUB-OFC) and Bengaluru (BLR-OFC) conduct region-local sessions.
+
+5.2 Day 1 Agenda:
+
+Time         | Session                                                        | Facilitator
+-------------|----------------------------------------------------------------|-------------------------
+09:00–09:30  | Welcome, Corvanta Mission & Values                             | People Operations
+09:30–10:15  | Identity & Right-to-Work Verification (US Form I-9 Section 2;  | People Operations
+             | IE right-to-work; IN KYC documents)                            |
+10:15–11:00  | IT Provisioning: laptop handover, Okta Verify MFA enrollment,  | IT Service Desk
+             | password creation, 1Password Business vault setup              |
+11:00–11:15  | Break                                                          | —
+11:15–12:00  | Information Security Briefing & Acceptable Use (IT-AUP-002)    | Security Awareness Team
+12:00–12:30  | Benefits Overview & Workday Navigation                         | Total Rewards
+13:30–14:30  | Hiring Manager 1:1 and Team Introductions                      | Hiring Manager
+14:30–15:00  | Onboarding Buddy Introduction                                  | Onboarding Buddy
+
+5.3 Day 1 Required Acknowledgments (due by 17:00 local time on Day 1; failure results in account suspension on Day 2 until completed):
+    (a) Confidentiality & Invention Assignment Agreement (CIAA)
+    (b) Code of Business Conduct acknowledgment (COC-100)
+    (c) IT Acceptable Use Policy acknowledgment (IT-AUP-002)
+    (d) Employee Handbook acknowledgment (regional edition)
+
+5.4 Standard Equipment:
+    - Engineering, IT, Network, Data, and SRE roles: Apple MacBook Pro 14-inch (Pro-series chip) or Dell Precision 5690 (Linux/Windows), 27-inch monitor.
+    - All other roles: Dell Latitude 7450 or Apple MacBook Air 13-inch, 27-inch monitor for hybrid employees.
+    - Privileged-access roles (IT Operations, Network Engineering, SRE, DBA, Security): YubiKey 5 NFC (FIDO2), issued only after SEC-220 completion (Section 7.3).
+
+6. 30-60-90 DAY ONBOARDING CHECKLIST
+
+6.1 The checklist is administered as the Workday "Onboarding Journey." Completion status is visible to the employee, Hiring Manager, and HRBP. Items marked [M] are mandatory; missed deadlines trigger escalation under Section 7.5 (training items) or Section 9.3 (all other mandatory items).
+
+PHASE 1 — DAYS 1–30: ORIENT & LEARN
+
+Item | Task                                                                  | Owner                 | Deadline
+-----|-----------------------------------------------------------------------|-----------------------|---------------------------
+1.01 | [M] Attend New Hire Orientation                                       | Employee              | Day 1
+1.02 | [M] Complete Day 1 Required Acknowledgments (Section 5.3)             | Employee              | Day 1, 17:00 local
+1.03 | [M] Enroll in Okta Verify MFA and register a backup factor            | Employee              | Day 1
+1.04 | [M] Complete Form I-9 Section 1 (US only)                             | Employee              | Day 1
+1.05 | [M] Complete Form I-9 Section 2 document verification (US only)       | People Operations     | 3rd business day after Start Date
+     |                                                                       |                       | (e.g., Thursday for a Monday start)
+1.06 | Role and team overview; share org chart, team charter, key systems    | Hiring Manager        | BD 2
+1.07 | [M] Configure direct deposit and tax withholding in Workday           | Employee              | BD 5
+1.08 | [M] Complete SEC-101 Information Security Fundamentals                | Employee              | BD 5
+1.09 | [M] Complete SEC-102 Data Governance & sign SEC-04 attestation        | Employee              | BD 10
+1.10 | [M] Complete SEC-103 Phishing & Social Engineering Awareness          | Employee              | Day 14
+1.11 | [M] Document 3–5 SMART 90-day objectives in Workday Goals             | Employee + Manager    | Day 15
+1.12 | Weekly 30-minute Buddy check-in (minimum 4 sessions)                  | Onboarding Buddy      | Weekly through Day 30
+1.13 | Meet with at least five (5) cross-functional stakeholders             | Employee              | Day 30
+1.14 | [M] Submit benefits elections in Workday (see Note A)                 | Employee              | Day 30
+1.15 | [M] Complete PRV-201, COC-100, and HAR-110                            | Employee              | Day 30
+1.16 | [M] 30-Day Check-in conversation documented in Workday                | Hiring Manager        | Day 30 (± 3 business days)
+1.17 | 30-Day New Hire Pulse Survey                                          | Employee              | Day 32
+
+Note A: Benefits elections must be submitted within 30 calendar days of the Start Date. Failure to elect results in default employee-only medical coverage and no dental, vision, or voluntary coverage until the next Open Enrollment period (November) unless a Qualifying Life Event occurs.
+
+PHASE 2 — DAYS 31–60: CONTRIBUTE
+
+Item | Task                                                                  | Owner                 | Deadline
+-----|-----------------------------------------------------------------------|-----------------------|---------------------------
+2.01 | Assume ownership of first scoped deliverable or project               | Employee              | Day 35
+2.02 | [M] Complete role-based training (Section 7.3)                        | Employee              | Day 45
+2.03 | [M] Access Validation: certify in SailPoint IdentityNow that granted  | Hiring Manager        | Day 45
+     | entitlements match the RBAP; revoke excess access (SEC-04 ACC-01)     |                       |
+2.04 | Complete one on-call shadow rotation (Engineering, IT Ops, Network,   | Employee              | Day 60
+     | SRE roles only); review IT-RB-NET-001 and team runbooks               |                       |
+2.05 | Review department SOPs and knowledge base articles; log in Corvanta   | Employee              | Day 60
+     | Learn                                                                 |                       |
+2.06 | [M] 60-Day Check-in with documented Buddy feedback                    | Hiring Manager        | Day 60
+2.07 | Optional: Join an Employee Resource Group (ERG)                       | Employee              | —
+
+PHASE 3 — DAYS 61–90: OWN & DELIVER
+
+Item | Task                                                                  | Owner                 | Deadline
+-----|-----------------------------------------------------------------------|-----------------------|---------------------------
+3.01 | Deliver independently against 90-day objectives                       | Employee              | Day 90
+3.02 | Present a 15-minute "Fresh Eyes" share-out (observations and          | Employee              | Day 75
+     | improvement ideas) to the team                                        |                       |
+3.03 | [M] Draft Individual Development Plan (IDP) in Workday                | Employee              | Day 80
+3.04 | [M] Complete Probationary Review in Workday (Section 9)               | Hiring Manager        | Day 85
+3.05 | HRBP review and approval of probationary outcome                      | HRBP                  | Day 88
+3.06 | [M] Close Onboarding Journey; complete 90-Day Survey                  | Employee / People Ops | Day 90
+3.07 | Onboarding Buddy assignment formally concludes                        | Onboarding Buddy      | Day 90
+
+7. MANDATORY SECURITY & COMPLIANCE TRAINING
+
+7.1 All courses are automatically assigned in Corvanta Learn at 07:00 local time on Day 1. Deadlines are calculated from the Start Date. Training is completed during paid working time.
+
+7.2 Core Curriculum (all workforce members):
+
+Code    | Course Title                                         | Duration          | Deadline   | Access Gate / Dependency
+--------|------------------------------------------------------|-------------------|------------|-------------------------------------------
+SEC-101 | Information Security Fundamentals                    | 45 min            | BD 5       | C2 system access is NOT provisioned until
+        |                                                      |                   |            | completion
+SEC-102 | Data Governance, Classification & SEC-04 Attestation | 40 min + e-sign   | BD 10      | Restricted Data Access Requests (RDAR) for
+        |                                                      |                   |            | C3 data cannot be submitted until complete
+SEC-103 | Phishing & Social Engineering Awareness              | 30 min            | Day 14     | Enrollment in phishing simulation program
+PRV-201 | Privacy & PII Handling (GDPR, CCPA/CPRA,             | 50 min            | Day 30     | Required before processing customer or
+        | India DPDP Act 2023)                                 |                   |            | employee PII
+COC-100 | Code of Business Conduct & Ethics                    | 60 min            | Day 30     | —
+HAR-110 | Respectful Workplace & Harassment Prevention         | 60 min (120 min   | Day 30     | —
+        |                                                      | for managers)     |            |
+
+7.3 Role-Based Training:
+
+Code    | Course Title                                  | Required For                                   | Deadline
+--------|-----------------------------------------------|------------------------------------------------|--------------------------------------
+SEC-210 | Secure Software Development (OWASP Top 10,    | Engineering, Data, DevOps, SRE                 | Day 45; required before merge rights
+        | secrets management)                           |                                                | to production repositories
+SEC-220 | Privileged Access & PAM (CyberArk)            | IT Ops, Network Engineering, SRE, DBAs,        | Before ANY privileged access grant
+        |                                               | Security                                       | (no grace period)
+PCI-300 | PCI DSS v4.0 Cardholder Data Handling         | Finance, Billing, Customer Support Tier 2      | Day 30
+INC-150 | Incident Response Fundamentals & On-Call      | Anyone joining a PagerDuty rotation            | Before first primary on-call shift
+        | Readiness                                     |                                                |
+
+7.4 Phishing Simulation. Simulations are conducted monthly. A new hire who fails two (2) simulations within the first 90 days must complete remedial course SEC-103R within seven (7) calendar days. A third failure is reported to the Hiring Manager and HRBP.
+
+7.5 Non-Compliance Escalation (measured from the missed deadline):
+    - +1 business day:   Automated reminder to employee and Hiring Manager.
+    - +3 business days:  Escalation to the Hiring Manager's manager (skip-level); item flagged in Workday.
+    - +5 business days:  IT suspends access to all non-essential applications. Email, Workday, Corvanta Learn, and the Okta dashboard remain available. Suspension lifts automatically upon course completion.
+    - +10 business days: Escalation to the HRBP and the Office of the CISO; documented as a performance concern; may preclude a "Confirm" probationary outcome (Section 9.3). Recorded as a V3 (Medium) violation under SEC-04 Section 12.
+
+7.6 Annual Refresher. SEC-101, SEC-102, SEC-103, and PRV-201 must be recompleted annually by January 31. Employees with a Start Date on or after October 1 are exempt from the immediately following January cycle.
+
+7.7 Deadline Extensions. Granted only for an approved leave of absence. The extension equals the duration of the leave plus five (5) business days and is requested via ServiceNow HR case. Extensions never waive access gates in Sections 7.2 and 7.3.
+
+8. PAID TIME OFF, HOLIDAYS, AND LEAVE
+
+8.1 PTO Accrual (United States):
+
+Completed Years of Service | Annual PTO           | Accrual per Semi-Monthly Pay Period | Maximum Accrual Cap
+---------------------------|----------------------|-------------------------------------|--------------------
+0–2 years                  | 15 days (120 hours)  | 5.00 hours                          | 180 hours
+3–5 years                  | 20 days (160 hours)  | 6.67 hours                          | 240 hours
+6–9 years                  | 23 days (184 hours)  | 7.67 hours                          | 276 hours
+10+ years                  | 25 days (200 hours)  | 8.33 hours                          | 300 hours
+
+Accrual stops when the cap is reached and resumes once the balance falls below the cap.
+
+8.2 New Hire PTO Rules:
+    (a) PTO accrual begins on the Start Date and is prorated for partial pay periods.
+    (b) Accrued PTO may be used only after completion of 30 calendar days of employment.
+    (c) Exception: pre-hire commitments disclosed in writing before offer acceptance may be honored with HRBP approval (maximum 5 days). This may create a negative balance of up to -40 hours, recoverable from final pay where permitted by law.
+    (d) No PTO may be scheduled during the first five (5) business days except for documented emergencies.
+
+8.3 Carryover. Up to 40 hours (5 days) of unused PTO carries over into the next calendar year and must be used by March 31 or it is forfeited. Where state law prohibits forfeiture (e.g., California, Colorado, Montana, Nebraska), accrued PTO is not forfeited, but the accrual cap in Section 8.1 applies.
+
+8.4 Requesting PTO. All PTO is requested in Workday. Absences of 3 or more consecutive business days require at least 10 business days' notice. Shorter absences require at least 2 business days' notice. Managers must respond within 3 business days.
+    Blackout periods:
+    - Finance & Accounting: the last 5 and first 5 business days of each fiscal quarter close.
+    - Infrastructure Operations & Network Engineering: the annual Peak Change Freeze (Monday before US Thanksgiving through the following Friday), except with Director approval.
+
+8.5 Paid Holidays (US). Eleven (11) fixed holidays: New Year's Day, Martin Luther King Jr. Day, Presidents' Day, Memorial Day, Juneteenth, Independence Day, Labor Day, Thanksgiving Day, Day after Thanksgiving, Christmas Eve, and Christmas Day. In addition, two (2) floating holidays are granted each January 1. New hires starting after June 30 receive one (1) floating holiday. Floating holidays do not carry over.
+
+8.6 Sick Leave (US). Ten (10) days (80 hours) granted on January 1 each year, prorated for new hires, and available from Day 1. Sick leave does not carry over and is not paid out at separation. Where local law is more generous, local law prevails.
+
+8.7 Other Leave Types:
+    - Bereavement: 5 days for immediate family; 3 days for extended family.
+    - Parental Leave: 16 weeks at 100% of base pay for birth, adoptive, and foster parents. Eligibility begins after 90 days of continuous service. Leave must be taken within 12 months of birth or placement and runs concurrently with FMLA where applicable.
+    - FMLA: Eligible after 12 months of service and 1,250 hours worked in the preceding 12 months.
+    - Jury Duty: Full pay for up to 15 business days per calendar year.
+    - Volunteer Time Off (VTO): 2 days (16 hours) per calendar year.
+    - Military Leave: In accordance with USERRA.
+
+8.8 International Summary (regional addenda HR-POL-101-IE and HR-POL-101-IN govern):
+
+Region  | Annual Leave                          | Public Holidays             | Sick Leave                     | Parental
+--------|---------------------------------------|-----------------------------|--------------------------------|------------------------------
+Ireland | 23 days (20 statutory + 3 Company)    | 10 public holidays          | 10 days Company sick pay       | 16 weeks at 100% (Company
+        |                                       |                             | (inclusive of statutory)       | enhancement)
+India   | 18 days Earned Leave (carryover up    | 10 declared + 2 restricted  | 12 days Casual/Sick Leave      | Maternity 26 weeks (statutory);
+        | to 45 days)                           | holidays                    |                                | other parents 6 weeks
+
+8.9 Payout at Separation. Unused PTO is paid out in accordance with applicable law. Sick leave and floating holidays are not paid out.
+
+9. PROBATIONARY PERIOD
+
+9.1 The Probationary Period is the first 90 calendar days of employment. For US employees, employment remains at-will during and after the Probationary Period. For Ireland and India, probation length and notice terms are defined in the employment contract (both regions: 6 months). The 30-60-90 checklist in Section 6 applies in all regions.
+
+9.2 The Hiring Manager must complete the Probationary Review in Workday by Day 85 with one of the following outcomes:
+    (a) Confirm — the employee has met expectations.
+    (b) Extend — permitted once, for a maximum of 30 calendar days. Requires HRBP approval and documented improvement objectives.
+    (c) Separate — requires HRBP and Employee Relations review before communication to the employee.
+
+9.3 An outcome of "Confirm" may not be recorded while any mandatory item 1.01–1.16, or any Section 7.2 core course, is incomplete. The outcome remains pending until remediated.
+
+10. ROLES AND RESPONSIBILITIES
+
+- New Employee: Completes all assigned tasks and training by deadline; raises blockers to the Hiring Manager or POSC.
+- Hiring Manager: Submits NHPR-01 on time; owns the 30-60-90 plan, check-ins, access validation, and Probationary Review.
+- Onboarding Buddy: Provides cultural and practical guidance; conducts weekly check-ins through Day 30 and is available through Day 90.
+- People Operations: Administers pre-boarding, NHO, identity verification, the Workday Onboarding Journey, and reporting.
+- HRBP: Approves exceptions and probationary outcomes; advises managers.
+- IT Service Desk: Provisions accounts, devices, and RBAP entitlements; enforces training-based access gates.
+- Office of the CISO / Security Awareness: Owns SEC-series curricula and phishing simulations; receives Section 7.5 escalations.
+
+11. EXCEPTIONS
+
+Exceptions to this Policy are requested via ServiceNow HR case type "Onboarding Policy Exception" and require HRBP approval. Exceptions affecting Section 7 also require approval from the Office of the CISO. No exception may waive the access gates in Sections 7.2 and 7.3. Approved exceptions are retained with the employee record for 7 years following separation.
+
+12. RELATED DOCUMENTS
+
+- SEC-04       Enterprise Data Governance & Compliance Policy
+- IT-AUP-002   IT Acceptable Use Policy
+- IT-RB-NET-001 Severity 1 Network Outage Runbook (on-call roles)
+- HR-POL-115   Leave of Absence Policy
+- HR-POL-130   Hybrid Work Policy
+- COC-100      Code of Business Conduct & Ethics
+- KB-DIR-006   Subject Matter Expert (SME) Directory
+
+13. REVISION HISTORY
+
+Version | Date        | Summary of Changes                                                         | Author
+--------|-------------|----------------------------------------------------------------------------|------------------------------
+4.0     | 2025-01-02  | Annual review; introduced Workday 30-60-90 Onboarding Journey              | P. Raman
+4.1     | 2025-08-11  | Added India DPDP Act to PRV-201; parental leave increased to 16 weeks      | P. Raman
+4.2     | 2026-09-15  | Added SEC-220 privileged access gate; Section 7.5 final escalation reduced | P. Raman / Office of the CISO
+        |             | from 15 to 10 business days; added INC-150 for on-call staff               |
+
+================================================================================
+END OF DOCUMENT — HR-POL-101 v4.2
+================================================================================
