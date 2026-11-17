@@ -26,7 +26,7 @@ Rules:
   - operational: tickets, incidents, services, on-call, operational metrics
   - employee_directory: name, title, department, work email, expertise, manager, who-knows-what
   - employee_personal: compensation, salary, bonus, performance rating, leave, health, home address, personal phone, national ID, disciplinary records
-  - confidential_business: M&A, acquisitions, unreleased financials, legal matters, confidential strategy or projects
+  - confidential_business: ONLY explicitly sensitive corporate matters: mergers and acquisitions, unreleased financial results, valuations, legal disputes, layoffs or restructuring, or projects the user calls confidential. Runbooks, disaster-recovery or evacuation plans, architecture, incidents and internal processes are NOT confidential_business; use general_knowledge or operational for them.
 - `source_needs` (one or more): documents (text documents), images (diagrams, screenshots, attached images), structured (tables of employees, incidents, services; counts, filters, aggregations)
 
 ## Example
