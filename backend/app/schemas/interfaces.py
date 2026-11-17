@@ -78,9 +78,7 @@ class PrincipalRepository(Protocol):
 
     async def list_demo_users(self, tenant_id: str) -> list[DemoUser]: ...
 
-    async def resolve_people(
-        self, user: UserContext, refs: Sequence[str]
-    ) -> dict[str, list[str]]:
+    async def resolve_people(self, user: UserContext, refs: Sequence[str]) -> dict[str, list[str]]:
         """Map each reference (as written) to matching employee IDs in the user's tenant.
 
         An empty list means unresolved. Never raises for unknown names.

@@ -15,7 +15,14 @@ class SourceRepository:
         return self._sources.get(source_id)
 
     def by_checksum(self, tenant_id: str, checksum: str) -> SourceMetadata | None:
-        return next((s for s in self._sources.values() if s.tenant_id == tenant_id and s.checksum_sha256 == checksum), None)
+        return next(
+            (
+                s
+                for s in self._sources.values()
+                if s.tenant_id == tenant_id and s.checksum_sha256 == checksum
+            ),
+            None,
+        )
 
     def save(self, source: SourceMetadata) -> None:
         self._sources[source.source_id] = source
