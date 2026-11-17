@@ -95,7 +95,6 @@ with st.sidebar:
             if exc.session_expired:
                 state.token = None
                 st.warning("Session expired. Choose your identity again.")
-    upload = st.file_uploader("Attach an image (optional)", type=["png", "jpg", "jpeg", "webp"])
     if st.button("New conversation", use_container_width=True):
         reset_conversation()
         st.rerun()
@@ -128,14 +127,7 @@ if prompt:
     with st.chat_message("assistant"):
         try:
             with st.spinner("Planning, checking access and gathering evidence…"):
-                upload_ids = []
-                if upload is not None:
-                    upload_ids.append(
-                        client.upload(
-                            state.token, upload.name, upload.getvalue(), upload.type or "image/png"
-                        )
-                    )
-                response = client.query(state.token, prompt, state.conversation_id, upload_ids)
+                response = client.query(state.token, prompt, state.conversation_id, [])
             state.conversation_id = response.conversation_id
             state.messages.append({"role": "assistant", "content": response})
             render_response(response, client, state.token, key=f"m{len(state.messages) - 1}")
