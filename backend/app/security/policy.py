@@ -68,12 +68,13 @@ class PolicyService:
     ) -> bool:
         if not subjects:
             return False
-        if subjects == {user.employee_id}:
+        normalized = {subject.rsplit(":", 1)[-1] for subject in subjects}
+        if normalized == {user.employee_id}:
             return True
         if "hr" in user.roles:
             return True
         return bool(
-            subjects.issubset(user.direct_report_ids)
+            normalized.issubset(user.direct_report_ids)
             and "manager" in user.roles
             and fields
             and fields.issubset(MANAGER_VISIBLE_FIELDS)

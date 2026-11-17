@@ -45,6 +45,13 @@ DEMO_USERS = [
         title="Finance Analyst",
         access_summary="Finance group sources",
     ),
+    DemoUser(
+        tenant_id="lumen",
+        employee_id="ingestor",
+        display_name="Admin Bot",
+        title="Ingestion Administrator",
+        access_summary="Upload and index approved organization sources",
+    ),
 ]
 
 DOCS = {
@@ -100,6 +107,7 @@ def context_for(employee_id: str) -> UserContext | None:
         "sam": ({"manager"}, {"all-staff", "eng-platform"}, Classification.CONFIDENTIAL),
         "morgan": ({"hr"}, {"all-staff", "hr-team"}, Classification.CONFIDENTIAL),
         "riley": ({"employee"}, {"all-staff", "finance"}, Classification.CONFIDENTIAL),
+        "ingestor": ({"ingestor", "admin"}, {"all-staff"}, Classification.RESTRICTED),
     }.get(employee_id)
     if not roles:
         return None

@@ -18,3 +18,16 @@ class APIClient:
             .raise_for_status()
             .json()
         )
+
+    def upload(self, file, classification, groups, token):
+        return (
+            httpx.post(
+                self.base + "/api/v1/ingest",
+                headers={"Authorization": f"Bearer {token}"},
+                data={"classification": classification, "allowed_groups": groups},
+                files={"file": (file.name, file.getvalue(), file.type)},
+                timeout=180,
+            )
+            .raise_for_status()
+            .json()
+        )

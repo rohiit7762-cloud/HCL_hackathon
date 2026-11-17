@@ -108,9 +108,10 @@ class IngestionService:
                 return IngestResult(
                     source_id=source_id, version=version, status="loaded", row_count=rows
                 )
-            parsed = self.parsers.parse(data, filename)
-            blocks = list(parsed.blocks)
             if kind == SourceKind.IMAGE:
+                from app.ingestion.parsers.models import ParsedDocument
+
+                parsed = ParsedDocument(blocks=[], mime_type=mime)
                 blocks = []
                 ocr = self._ocr(data)
                 if ocr:
@@ -125,6 +126,8 @@ class IngestionService:
                 except Exception:
                     pass
                 parsed.blocks = blocks
+            else:
+                parsed = self.parsers.parse(data, filename)
             chunks = await self.chunker.chunk(parsed, source)
             if kind == SourceKind.IMAGE:
                 chunks = [

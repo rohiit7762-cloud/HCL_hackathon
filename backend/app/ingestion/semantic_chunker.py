@@ -109,7 +109,7 @@ class SemanticChunker:
             if (
                 merged
                 and sum(len(_tokens(t)) for _, t in merged[-1][0]) < self.minimum
-                and entry[0][0].heading_path == merged[-1][0][0].heading_path
+                and entry[0][0][0].heading_path == merged[-1][0][0][0].heading_path
                 and sum(len(_tokens(t)) for _, t in merged[-1][0] + entry[0]) <= self.maximum
             ):
                 merged[-1] = (merged[-1][0] + entry[0], merged[-1][1] + entry[1])

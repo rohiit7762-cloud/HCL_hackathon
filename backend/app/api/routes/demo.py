@@ -82,4 +82,7 @@ async def me(request: Request):
 async def query(body: QueryRequest, request: Request):
     user = _user(request)
     rid = getattr(request.state, "request_id", "local-demo")
+    orchestrator = getattr(request.app.state, "orchestrator", None)
+    if orchestrator:
+        return await orchestrator.query(user, body.query, rid, body.conversation_id)
     return answer_demo(body.query, user, rid, body.conversation_id)

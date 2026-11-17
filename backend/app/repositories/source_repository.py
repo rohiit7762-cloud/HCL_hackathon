@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 
 from app.schemas.ingestion import SourceMetadata
 
@@ -8,8 +9,15 @@ from app.schemas.ingestion import SourceMetadata
 class SourceRepository:
     """Small repository adapter; replace with NeonSourceRepository for deployed DI."""
 
-    def __init__(self) -> None:
+    def __init__(self, manifest: str | None = None) -> None:
         self._sources: dict[str, SourceMetadata] = {}
+        self._manifest = Path(manifest).resolve() if manifest else None
+        if self._manifest and self._manifest.is_file():
+            try:
+                records = json.loads(self._manifest.read_text(encoding="utf-8"))
+                self._sources = {item["source_id"]: SourceMetadata.model_validate(item) for item in records}
+            except (OSError, ValueError):
+                self._sources = {}
 
     def get(self, source_id: str) -> SourceMetadata | None:
         return self._sources.get(source_id)
@@ -26,6 +34,11 @@ class SourceRepository:
 
     def save(self, source: SourceMetadata) -> None:
         self._sources[source.source_id] = source
+        if self._manifest:
+            self._manifest.parent.mkdir(parents=True, exist_ok=True)
+            temporary = self._manifest.with_suffix(".tmp")
+            temporary.write_text(json.dumps([s.model_dump(mode="json") for s in self._sources.values()]), encoding="utf-8")
+            temporary.replace(self._manifest)
 
     def all(self, tenant_id: str) -> list[SourceMetadata]:
         return [s for s in self._sources.values() if s.tenant_id == tenant_id]

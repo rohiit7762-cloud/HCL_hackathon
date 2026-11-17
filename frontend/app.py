@@ -50,6 +50,33 @@ with st.sidebar:
             f'<div class="card"><div class="eyebrow">Synthetic identity</div><h3>{selected["display_name"]}</h3><p>{selected["title"]}</p><small>{selected["access_summary"]}</small></div>',
             unsafe_allow_html=True,
         )
+        if selected["employee_id"] == "ingestor":
+            st.markdown('<div class="eyebrow">Index project sources</div>', unsafe_allow_html=True)
+            upload = st.file_uploader(
+                "PDF, DOCX, Markdown, TXT, CSV, JSON or image",
+                type=[
+                    "pdf",
+                    "docx",
+                    "md",
+                    "markdown",
+                    "txt",
+                    "csv",
+                    "json",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "webp",
+                ],
+            )
+            classification = st.selectbox(
+                "Classification", ["public", "internal", "confidential", "restricted"], index=1
+            )
+            groups = st.text_input("Allowed groups (comma separated)", placeholder="eng-platform")
+            if upload and st.button("Index source", use_container_width=True):
+                try:
+                    st.success(api.upload(upload, classification, groups, st.session_state.token))
+                except httpx.HTTPError as e:
+                    st.error(f"Indexing failed: {e}")
     st.markdown('<div class="eyebrow">Try a prompt</div>', unsafe_allow_html=True)
     prompts = [
         "What should I set up in my first week?",

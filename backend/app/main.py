@@ -10,7 +10,7 @@ from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.api.routes import demo, health, sources
+from app.api.routes import demo, health, ingest, sources
 from app.core.config import Settings, get_settings
 from app.core.errors import AppError
 from app.core.logging import configure_logging, get_logger, request_id_var
@@ -34,6 +34,38 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        if settings.groq_api_key.get_secret_value():
+            from app.agents.retrieval import RetrievalAgent
+            from app.ingestion.semantic_chunker import SemanticChunker
+            from app.providers.embedding_provider import SentenceTransformerEmbeddingProvider
+            from app.providers.groq_provider import GroqProvider
+            from app.repositories.source_repository import BlobStore, SourceRepository
+            from app.repositories.vector_repository import ChromaVectorRepository
+            from app.security.policy import PolicyService
+            from app.services.ingestion import IngestionService
+            from app.services.orchestration import QueryOrchestrator
+
+            llm = GroqProvider(settings)
+            embeddings = SentenceTransformerEmbeddingProvider(settings.embedding_model)
+            vectors = ChromaVectorRepository(
+                settings.chroma_path, embeddings.model_id, embeddings.dimension
+            )
+            registry = SourceRepository(f"{settings.blob_path}/sources.json")
+            policy = PolicyService(registry.all(settings.demo_tenant_id), settings.min_aggregation_group)
+            chunker = SemanticChunker(
+                embeddings,
+                settings.chunk_similarity_threshold,
+                settings.chunk_min_tokens,
+                settings.chunk_max_tokens,
+            )
+            blobs = BlobStore(settings.blob_path)
+            retrieval = RetrievalAgent(vectors, embeddings, policy, registry)
+            app.state.ingestion = IngestionService(
+                settings, registry, blobs, vectors, embeddings, chunker, llm
+            )
+            app.state.orchestrator = QueryOrchestrator(llm, retrieval, policy, settings)
+            app.state.sources = registry
+            app.state.blobs = blobs
         logger.info("startup", extra={"app_env": settings.app_env, "demo_mode": settings.demo_mode})
         yield
         logger.info("shutdown")
@@ -79,5 +111,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(health.router)
     app.include_router(demo.router)
+    app.include_router(ingest.router)
     app.include_router(sources.router)
     return app
