@@ -10,7 +10,8 @@ from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.api.routes import health
+from app.api.dependencies import ServiceContainer, build_container
+from app.api.routes import demo, health, ingest, query, sources, uploads
 from app.core.config import Settings, get_settings
 from app.core.errors import AppError
 from app.core.logging import configure_logging, get_logger, request_id_var
@@ -28,15 +29,25 @@ def _error(status_code: int, code: str, message: str) -> JSONResponse:
     return JSONResponse(status_code=status_code, content=body.model_dump())
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(
+    settings: Settings | None = None, container: ServiceContainer | None = None
+) -> FastAPI:
+    """Create the app. Pass `container` to inject services (tests); otherwise the
+    container is built at startup from Codex's `build_data_layer` and the Groq provider."""
     settings = settings or get_settings()
     configure_logging(settings.log_level)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         logger.info("startup", extra={"app_env": settings.app_env, "demo_mode": settings.demo_mode})
-        yield
-        logger.info("shutdown")
+        owned = container is None
+        app.state.container = container or await build_container(settings)
+        try:
+            yield
+        finally:
+            if owned:
+                await app.state.container.close()
+            logger.info("shutdown")
 
     app = FastAPI(
         title="Enterprise Knowledge Assistant",
@@ -76,5 +87,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         logger.error("unhandled_error", extra={"exc_type": type(exc).__name__})
         return _error(500, "internal_error", AppError.default_message)
 
-    app.include_router(health.router)
+    for router in (
+        health.router,
+        demo.router,
+        query.router,
+        uploads.router,
+        ingest.router,
+        sources.router,
+    ):
+        app.include_router(router)
     return app

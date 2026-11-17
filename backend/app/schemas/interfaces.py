@@ -11,7 +11,8 @@ callers must treat both identically (invariant I12).
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Awaitable, Callable, Sequence
+from dataclasses import dataclass
 from typing import Protocol, TypeVar, runtime_checkable
 
 from pydantic import BaseModel
@@ -78,9 +79,7 @@ class PrincipalRepository(Protocol):
 
     async def list_demo_users(self, tenant_id: str) -> list[DemoUser]: ...
 
-    async def resolve_people(
-        self, user: UserContext, refs: Sequence[str]
-    ) -> dict[str, list[str]]:
+    async def resolve_people(self, user: UserContext, refs: Sequence[str]) -> dict[str, list[str]]:
         """Map each reference (as written) to matching employee IDs in the user's tenant.
 
         An empty list means unresolved. Never raises for unknown names.
@@ -151,3 +150,25 @@ class IngestionService(Protocol):
     async def ingest(
         self, user: UserContext, filename: str, data: bytes, options: IngestOptions
     ) -> IngestResult: ...
+
+
+@dataclass(frozen=True)
+class DataLayer:
+    """Everything Codex provides, built by ONE factory so connection pools are shared.
+
+    Codex implements, in `app/services/data_layer.py`:
+
+        async def build_data_layer(settings: Settings, llm: LLMProvider) -> DataLayer
+
+    Claude's `api/dependencies.py` calls it at startup and `close()` at shutdown.
+    """
+
+    principals: PrincipalRepository
+    policy: PolicyService
+    sensitivity: SensitivityDetector
+    retrieval: RetrievalTool
+    sql: SQLTool
+    sources: SourceService
+    uploads: UploadStore
+    ingestion: IngestionService
+    close: Callable[[], Awaitable[None]] | None = None
