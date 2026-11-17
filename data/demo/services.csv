@@ -1,0 +1,7 @@
+service_id,name,owner_team,tier,oncall_group,owner_employee_id
+svc-payments,payments-api,payments,tier-1,payments-oncall,E108
+svc-ledger,ledger-db,platform,tier-1,platform-oncall,E106
+svc-auth,auth-service,platform,tier-1,platform-oncall,E107
+svc-kafka,kafka-cluster,platform,tier-2,platform-oncall,E105
+svc-search,search-api,platform,tier-3,platform-oncall,E100
+svc-notify,notification-service,payments,tier-2,payments-oncall,E111

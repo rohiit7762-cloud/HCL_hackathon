@@ -1,0 +1,12 @@
+{
+  "tenant_id": "orbit",
+  "title": "Orbit directory",
+  "classification": "restricted",
+  "allowed_groups": [
+    "hr-team"
+  ],
+  "allowed_roles": [],
+  "contains_personal_data": false,
+  "contains_confidential_business": false,
+  "dataset_name": "employees"
+}

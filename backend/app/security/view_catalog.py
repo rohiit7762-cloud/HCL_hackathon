@@ -60,8 +60,10 @@ EMPLOYEE_DIRECTORY = ViewSpec(
 EMPLOYEE_HR = ViewSpec(
     name="api.employee_hr",
     description=(
-        "HR records. Rows are limited by database policy to the user, their direct "
-        "reports, or everyone for HR."
+        "HR records. The database already returns only the rows this user may see: "
+        "their own row, their direct reports (for managers), or everyone (for HR). "
+        "Do NOT filter by manager or by the user; to list 'my direct reports' or 'my team', "
+        "select the needed columns with no filters."
     ),
     category=DataCategory.EMPLOYEE_PERSONAL,
     datasets=("employees",),

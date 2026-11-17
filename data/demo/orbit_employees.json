@@ -1,0 +1,11 @@
+[
+  {
+    "employee_id": "O100",
+    "name": "Olu Okafor",
+    "title": "Engineer",
+    "team": "core",
+    "groups": "all-staff",
+    "roles": "employee",
+    "demo_access_summary": "Employee of a different tenant (isolation test)."
+  }
+]

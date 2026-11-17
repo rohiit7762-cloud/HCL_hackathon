@@ -348,6 +348,7 @@ def structured_evidence(task_id: str, result: SQLResult) -> Evidence:
     summary = f"{result.row_count} row(s) from {result.provenance.view}"
     if result.truncated:
         summary += " (truncated)"
+    summary += "\n" + describe_query(result)
     excerpt = (summary + "\n" + "\n".join(lines))[:1500]
     source_id = (
         result.provenance.dataset_source_ids[0]
@@ -367,6 +368,21 @@ def structured_evidence(task_id: str, result: SQLResult) -> Evidence:
         structured=result,
         retrieved_at=datetime.now(UTC),
     )
+
+
+def describe_query(result: SQLResult) -> str:
+    """Human-readable description of what a structured result covers."""
+    spec = result.spec
+    parts = []
+    if spec.filters:
+        parts.append(
+            "filters: " + "; ".join(f"{col} {op.value} {value}" for col, op, value in spec.filters)
+        )
+    if spec.aggregates:
+        parts.append("computed: " + ", ".join(f"{fn.value}({col})" for fn, col in spec.aggregates))
+    if spec.group_by:
+        parts.append("grouped by: " + ", ".join(spec.group_by))
+    return "Query " + (" | ".join(parts) if parts else "with no filters")
 
 
 def dependency_keywords(evidence: list[Evidence], limit: int = 8) -> list[str]:
